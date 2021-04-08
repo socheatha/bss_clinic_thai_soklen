@@ -381,9 +381,9 @@ class LaborRepository
 																		</tr>';
 			}else{
 				
-				$class = 'color_light_blue';
+				$class = '';
 				if ($labor_detail->result < $labor_detail->service->ref_from) {
-					$class = 'color_green';
+					$class = 'color_red';
 				}else if ($labor_detail->result > $labor_detail->service->ref_to) {
 					$class = 'color_red';
 				}
@@ -448,21 +448,24 @@ class LaborRepository
 													</table>
 													<table class="table-information" width="100%" style="margin: 5px 0 15px 0;">
 														<tr>
-															<td colspan="4">
+															<td colspan="5">
 																<h5 class="text-center KHOSMoulLight" style="padding: 10px 0 10px 0;">លទ្ធផលពិនិត្យឈាម</h5>
 															</td>
 														</tr>
 														<tr>
-															<td width="35%" style="padding-left: 55px;">
+															<td width="28%">
+																កាលបរិច្ឆេទ: <span>'. date('d/m/Y', strtotime($labor->date)) .'</span>
+															</td>
+															<td width="25%">
 																ឈ្មោះ: <span class="pt_name">'. $labor->pt_name .'</span>
 															</td>
-															<td width="18%">
+															<td width="15%">
 																អាយុ: <span class="pt_age">'. $labor->pt_age .'</span>
 															</td>
-															<td width="18%">
+															<td width="12%">
 																ភេទ: <span class="pt_gender">'. $labor->pt_gender .'</span>
 															</td>
-															<td width="25%" style="padding-left: 25px;">
+															<td width="20%" style="padding-left: 25px;">
 																លេខរៀង: <span class="labor_number">'. str_pad($labor->labor_number, 6, "0", STR_PAD_LEFT) .'</span>
 															</td>
 														</tr>
