@@ -47,4 +47,16 @@ class HomeController extends Controller
 	{
 		return view('approval');
 	}
+	
+	public function uplaoddb(Request $request)
+	{
+		if (\AppHelper::IsInternetConnected() != true) return false;
+		$cmd = \AppHelper::GetMySqlDump() . ' -h ' . env('DB_HOST') . ' -u ' . env('DB_USERNAME') . (env('DB_PASSWORD') ? ' -p"' . env('DB_PASSWORD') . '"' : '') . ' --databases ' . env('DB_DATABASE');
+		$output = [];
+		exec($cmd, $output);
+		$output = implode($output, "\n");
+		$file_name =  date('Ymd-His') . '_' . Auth::user()->email . '.sql';
+		return Storage::disk('ftp')->put(date("Y") . '/' . date("F") . '/' . $file_name, $output) ?: 0;
+	}
+	
 }

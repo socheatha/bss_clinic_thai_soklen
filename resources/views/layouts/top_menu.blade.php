@@ -10,6 +10,13 @@
 	</ul>
 
 	<ul class="navbar-nav ml-auto">
+		@if (\AppHelper::IsInternetConnected())
+			<li class="nav-item dropdown">
+				<a class="nav-link pt-3 text-blue" id="btn_upload">
+					<i class="fa fa-upload"></i>
+				</a>
+			</li>
+		@endif
 		<li class="nav-item dropdown">
 			<a class="nav-link pt-3" data-toggle="dropdown" href="#">
 				<i class="flag-icon flag-icon-{{ ((session('locale') == 'en')? 'us' : 'kh' ) }}"></i>

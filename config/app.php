@@ -234,6 +234,7 @@ return [
         'Datatables' => Yajra\Datatables\Facades\Datatables::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         // 'Input' => Illuminate\Support\Facades\Input::class,
+        'AppHelper' => App\Helpers\AppHelper::class,
 
     ],
 

@@ -99,4 +99,20 @@ $(document).ready(function () {
             }
         )
     }
+    
+    $('#btn_upload').click(function () {
+        $('#btn_upload').html('uploading data to BSS FTP server, please wait. <i class="fa fa-spinner fa-pulse"></i>');
+        $.ajax({
+            url: bss_string('/uplaoddb'),
+            method: 'post',
+            // async: false,
+            complete: function(xhr, textStatus) {
+                if (xhr.status == 200) {
+                    $('#btn_upload').html('<p class="text-success">successfull uploaded. <i class="fa fa-check"></i></p>');
+                } else {
+                    $('#btn_upload').html('<p class="text-danger">problem while on uploading process. <i class="fa fa-times"></i></p>');
+                }
+            } 
+        });
+    });
 });
