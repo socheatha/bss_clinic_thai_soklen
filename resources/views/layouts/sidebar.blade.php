@@ -1,16 +1,16 @@
 
 <!-- Main Sidebar Container -->
-<aside class="main-sidebar elevation-4 {{ ((Auth::user()->setting->legacy == '1')? '' : 'sidebar-light-indigo') }} {{ ((Auth::user()->setting->sidebar_color != '')? Auth::user()->setting->sidebar_color : 'sidebar-dark-primary') }}">
+<aside class="main-sidebar elevation-4 {{ ((Auth::user()->setting()->legacy == '1')? '' : 'sidebar-light-indigo') }} {{ ((Auth::user()->setting()->sidebar_color != '')? Auth::user()->setting()->sidebar_color : 'sidebar-dark-primary') }}">
 	<!-- Brand Logo -->
 	<a href="index3.html" class="brand-link">
-		<img src="/images/setting/{{ Auth::user()->setting->logo }}" alt="{{ Auth::user()->setting->clinic_name }}" class="brand-image img-circle elevation-3">
-		<span class="brand-text font-weight-light">{{ Auth::user()->setting->clinic_name_kh }}</span>
+		<img src="/images/setting/logo.png" alt="{{ Auth::user()->setting()->clinic_name }}" class="brand-image img-circle elevation-3">
+		<span class="brand-text font-weight-light">{{ Auth::user()->setting()->clinic_name_kh }}</span>
 	</a>
 
 	<!-- Sidebar -->
 	<div class="sidebar">
 		<nav class="mt-2">
-			<ul class="nav nav-pills nav-sidebar flex-column {{ ((Auth::user()->setting->legacy == '1')? 'nav-legacy nav-flat' : 'sidebar-light-indigo') }} nav-child-indent text-sm" data-widget="treeview" role="menu" data-accordion="false">
+			<ul class="nav nav-pills nav-sidebar flex-column {{ ((Auth::user()->setting()->legacy == '1')? 'nav-legacy nav-flat' : 'sidebar-light-indigo') }} nav-child-indent text-sm" data-widget="treeview" role="menu" data-accordion="false">
 
 				<!-- Add icons to the links using the .nav-icon class
 						with font-awesome or any other icon font library -->

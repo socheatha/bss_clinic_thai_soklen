@@ -68,16 +68,16 @@ class EchoesRepository
 													<table class="table-header" width="100%">
 														<tr>
 															<td  width="30%" class="text-center">
-																<div style="width: 3cm; height: 3cm; margin: 0 auto;"><img src="/images/setting/'. Auth::user()->setting->logo .'" alt="IMG"></div>
+																<div style="width: 3cm; height: 3cm; margin: 0 auto;"><img src="/images/setting/logo.png" alt="IMG"></div>
 																<div class="KHOSMoulLight" style="padding: 5px 0;">មន្ទីសុខាភិបាលខេត្តកំពង់ចាម</div>
-																<div class="KHOSMoulLight">'. Auth::user()->setting->clinic_name_kh .'</div>
+																<div class="KHOSMoulLight">'. Auth::user()->setting()->clinic_name_kh .'</div>
 															</td>
 															<td width="30%" class="text-center">
 															</td>
 															<td width="40%" class="text-center">
 																<br/>
-																<div>'. Auth::user()->setting->echo_address .'</div>
-																<div style="padding: 5px 0;">Tel: '. Auth::user()->setting->phone .'</div>
+																<div>'. Auth::user()->setting()->echo_address .'</div>
+																<div style="padding: 5px 0;">Tel: '. Auth::user()->setting()->phone .'</div>
 															</td>
 														</tr>
 													</table>
@@ -92,16 +92,16 @@ class EchoesRepository
 													<table class="table-header" width="100%">
 														<tr>
 															<td width="40%">
-																<div class="KHOSMoulLight"style="color: red;">'. Auth::user()->setting->sign_name_kh .'</div>
-																<div style="color: blue; font-weight: bold; text-transform: uppercase; padding: 5px 0;">'. Auth::user()->setting->sign_name_en .'</div>
-																<div>'. Auth::user()->setting->echo_description .'</div>
+																<div class="KHOSMoulLight"style="color: red;">'. Auth::user()->setting()->sign_name_kh .'</div>
+																<div style="color: blue; font-weight: bold; text-transform: uppercase; padding: 5px 0;">'. Auth::user()->setting()->sign_name_en .'</div>
+																<div>'. Auth::user()->setting()->echo_description .'</div>
 															</td>
 															<td  width="20%">
-																<img src="/images/setting/'. Auth::user()->setting->logo .'" alt="IMG">
+																<img src="/images/setting/logo.png" alt="IMG">
 															</td>
 															<td width="40%" class="text-center">
-																<div>'. Auth::user()->setting->echo_address .'</div>
-																<div style="padding: 5px 0;">Tel: '. Auth::user()->setting->phone .'</div>
+																<div>'. Auth::user()->setting()->echo_address .'</div>
+																<div style="padding: 5px 0;">Tel: '. Auth::user()->setting()->phone .'</div>
 															</td>
 														</tr>
 													</table>
@@ -148,7 +148,7 @@ class EchoesRepository
 																<br/>
 																<br/>
 																<br/>
-																<div>'. Auth::user()->setting->sign_name_en .'</div>
+																<div>'. Auth::user()->setting()->sign_name_en .'</div>
 															</td>
 														</tr>
 													</table>

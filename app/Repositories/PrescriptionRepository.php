@@ -70,201 +70,103 @@ class PrescriptionRepository
 
 		if(empty($prescription->province)){ $prescription->province = new \stdClass(); $prescription->province->name = ''; }
 		if(empty($prescription->district)){ $prescription->district = new \stdClass(); $prescription->district->name = ''; }
-		if (Auth::user()->roles->first()->name == 'THAI SOKLEN CLINIC') {
-			$prescription_detail = '<section class="prescription-print" style="position: relative;">
-													<table class="table-header" width="100%">
-														<tr>
-															<td rowspan="5" width="20%" style="padding: 10px;">
-																<img src="/images/setting/'. Auth::user()->setting->logo .'" alt="IMG">
-															</td>
-															<td class="text-center" style="padding: 5px 0;">
-																<h3 class="color_light_blue KHOSMoulLight">'. Auth::user()->setting->clinic_name_kh .'</h3>
-															</td>
-														</tr>
-														<tr>
-															<td class="text-center" style="padding: 2px 0;">
-																<h3 class="color_light_blue roboto_b">'. Auth::user()->setting->clinic_name_en .'</h3>
-															</td>
-														</tr>
-														<tr>
-															<td class="text-center" style="padding: 1px 0;">
-																<div class="color_light_blue">'. Auth::user()->setting->description .'</div>
-															</td>
-														</tr>
-														<tr>
-															<td class="text-center" style="padding: 1px 0;">
-																<div class="color_light_blue">'. Auth::user()->setting->address .'</div>
-															</td>
-														</tr>
-														<tr>
-															<td class="text-center" style="padding-bottom: 5px;">
-																<div class="color_light_blue">លេខទូរស័ព្ទ: <b>'. Auth::user()->setting->phone .'</b></div>
-															</td>
-														</tr>
-													</table>
-													<table class="table-information" width="100%" style="border-top: 2px solid #999; border-bottom: 2px solid #999; margin: 10px 0;">
-														<tr>
-															<td colspan="3">
-																<h5 class="text-center KHOSMoulLight" style="padding-top: 8px;">វេជ្ជបញ្ជា</h5>
-															</td>
-														</tr>
-														<tr>
-															<td>
-																កាលបរិច្ឆេទ:<span class="date">'. date('d/m/Y', strtotime($prescription->date)) .'</span>
-															</td>
-															<td width="29%">
-																លេខអ្នកជំងឺ:<span class="pt_no">'. str_pad($prescription->pt_no, 6, "0", STR_PAD_LEFT) .'</span>
-															</td>
-															<td width="29%">
-																រោគវិនិច្ឆ័យ:<span class="code">'. $prescription->pt_diagnosis .'</span>
-															</td>
-														</tr>
-														<tr>
-															<td>
-																ឈ្មោះ:<span class="pt_name">'. $prescription->pt_name .'</span>
-															</td>
-															<td>
-															អាយុ:<span class="pt_age">'. $prescription->pt_age .'</span>
-															</td>
-															<td>
-																ភេទ:<span class="pt_gender">'. $prescription->pt_gender .'</span>
-															</td>
-														</tr>
-														<tr>
-															<td colspan="3">
-																អាសយដ្ឋាន: <span class="pt_name">'. (($prescription->pt_village!='')? 'ភូមិ'.$prescription->pt_village : '') . (($prescription->pt_commune!='')? (($prescription->province->name=='ភ្នំពេញ')? ' សង្កាត់'.$prescription->pt_commune : ' ឃុំ'.$prescription->pt_commune) : '') . (($prescription->district->name!='')? (($prescription->province->name=='ភ្នំពេញ')? ' ខណ្ឌ'.$prescription->district->name : ' ស្រុក'.$prescription->district->name) : ''). (($prescription->province->name!='')? (($prescription->province->name=='ភ្នំពេញ')? ' រាជធានីភ្នំពេញ'.$prescription->province->name : ' ខេត្ត'.$prescription->province->name) : '') .'</span>
-															</td>
-														</tr>
-													</table>
-													<table class="table-detail" width="100%">
-														<thead>
-															<th class="text-center" width="5%">ល.រ</th>
-															<th class="text-center">ឈ្មោះថ្នាំ</th>
-															<th class="text-center" width="6%">ព្រឹក</th>
-															<th class="text-center" width="6%">ថ្ងៃ</th>
-															<th class="text-center" width="6%">ល្ងាច</th>
-															<th class="text-center" width="6%">យប់</th>
-															<th class="text-center" width="8%">ចំនួនថ្ងៃ</th>
-															<th class="text-center" width="6%">សរុប</th>
-															<th class="text-center" width="13%">ការប្រើប្រាស់</th>
-															<th class="text-center" width="19%">កំណត់ចំណាំ</th>
-														</thead>
-														<tbody>
-															'. $tbody .'
-														</tbody>
-													</table>
-													<small class="remark">'. $prescription->remark .'</small>
-													<br/>
-													<div class="color_light_blue" style="text-decoration: underline; text-align: center; position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);">សូមយកវេជ្ជបញ្ជាមកវិញពេលមកពិនិត្យលើកក្រោយ</div>
-													<table class="table-footer" style="position: absolute; bottom: 80px; " width="90%">
-														<tr>
-															<td></td>
-															<td width="32%" class="text-center">
-																<div><b class="color_light_blue" style="font-size: 16px;">គ្រូពេទ្យព្យាបាល</b></div>
-																<div class="sign_box"></div>
-																<div style="color: blue;"><span class="color_blue KHOSMoulLight">វេជ្ជ. '. Auth::user()->setting->sign_name_kh .'</span></div>
-															</td>
-														</tr>
-													</table>
-												</section>';
-		}else{
-			$prescription_detail = '<section class="prescription-print" style="position: relative;">
-													<table class="table-header" width="100%">
-														<tr>
-															<td rowspan="5" width="20%" style="padding: 10px;">
-																<img src="/images/setting/'. Auth::user()->setting->logo .'" alt="IMG">
-															</td>
-															<td class="text-center" style="padding: 5px 0;">
-																<h3 class="color_blue KHOSMoulLight" style="color: blue;">'. Auth::user()->setting->clinic_name_kh .'</h3>
-															</td>
-														</tr>
-														<tr>
-															<td class="text-center" style="padding: 2px 0;">
-																<h3 class="color_red roboto_b" style="color: red;">'. Auth::user()->setting->clinic_name_en .'</h3>
-															</td>
-														</tr>
-														<tr>
-															<td class="text-center" style="padding: 1px 0;">
-																<div>'. Auth::user()->setting->description .'</div>
-															</td>
-														</tr>
-														<tr>
-															<td class="text-center" style="padding: 1px 0;">
-																<div>'. Auth::user()->setting->address .'</div>
-															</td>
-														</tr>
-														<tr>
-															<td class="text-center" style="padding-bottom: 5px;">
-																<div>លេខទូរស័ព្ទ: '. Auth::user()->setting->phone .'</div>
-															</td>
-														</tr>
-													</table>
-													<table class="table-information" width="100%" style="border-top: 4px solid red; border-bottom: 4px solid red; margin: 10px 0;">
-														<tr>
-															<td colspan="3">
-																<h5 class="text-center KHOSMoulLight" style="padding-top: 8px;">វេជ្ជបញ្ជា</h5>
-															</td>
-														</tr>
-														<tr>
-															<td>
-																កាលបរិច្ឆេទ:<span class="date">'. date('d/m/Y', strtotime($prescription->date)) .'</span>
-															</td>
-															<td width="29%">
-																លេខអ្នកជំងឺ:<span class="pt_no">'. str_pad($prescription->pt_no, 6, "0", STR_PAD_LEFT) .'</span>
-															</td>
-															<td width="29%">
-																រោគវិនិច្ឆ័យ:<span class="code">'. $prescription->pt_diagnosis .'</span>
-															</td>
-														</tr>
-														<tr>
-															<td>
-																ឈ្មោះ:<span class="pt_name">'. $prescription->pt_name .'</span>
-															</td>
-															<td>
-															អាយុ:<span class="pt_age">'. $prescription->pt_age .'</span>
-															</td>
-															<td>
-																ភេទ:<span class="pt_gender">'. $prescription->pt_gender .'</span>
-															</td>
-														</tr>
-														<tr>
-															<td colspan="3">
-																អាសយដ្ឋាន: <span class="pt_name">'. (($prescription->pt_village!='')? 'ភូមិ'.$prescription->pt_village : '') . (($prescription->pt_commune!='')? (($prescription->province->name=='ភ្នំពេញ')? ' សង្កាត់'.$prescription->pt_commune : ' ឃុំ'.$prescription->pt_commune) : '') . (($prescription->district->name!='')? (($prescription->province->name=='ភ្នំពេញ')? ' ខណ្ឌ'.$prescription->district->name : ' ស្រុក'.$prescription->district->name) : ''). (($prescription->province->name!='')? (($prescription->province->name=='ភ្នំពេញ')? ' រាជធានីភ្នំពេញ'.$prescription->province->name : ' ខេត្ត'.$prescription->province->name) : '') .'</span>
-															</td>
-														</tr>
-													</table>
-													<table class="table-detail" width="100%">
-														<thead>
-															<th class="text-center" width="5%">ល.រ</th>
-															<th class="text-center">ឈ្មោះថ្នាំ</th>
-															<th class="text-center" width="6%">ព្រឹក</th>
-															<th class="text-center" width="6%">ថ្ងៃ</th>
-															<th class="text-center" width="6%">ល្ងាច</th>
-															<th class="text-center" width="6%">យប់</th>
-															<th class="text-center" width="8%">ចំនួនថ្ងៃ</th>
-															<th class="text-center" width="6%">សរុប</th>
-															<th class="text-center" width="13%">ការប្រើប្រាស់</th>
-															<th class="text-center" width="19%">កំណត់ចំណាំ</th>
-														</thead>
-														<tbody>
-															'. $tbody .'
-														</tbody>
-													</table>
-													<small class="remark">'. $prescription->remark .'</small>
-													<br/>
-													<div class="color_red" style="color: red; text-decoration: underline; text-align: center; position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);">សូមយកវេជ្ជបញ្ជាមកវិញពេលមកពិនិត្យលើក្រោយ</div>
-													<table class="table-footer" style="margin-top: 15px;" width="100%">
-														<tr>
-															<td></td>
-															<td width="32%" class="text-center">
-																<div><b>គ្រូពេទ្យព្យាបាល</b></div>
-																<div class="sign_box"></div>
-																<div style="color: blue;"><span class="color_blue KHOSMoulLight">'. Auth::user()->setting->sign_name_kh .'</span></div>
-															</td>
-														</tr>
-													</table>
-												</section>';
-		}
+		$prescription_detail = '<section class="prescription-print" style="position: relative;">
+														<table class="table-header" width="100%">
+															<tr>
+																<td rowspan="5" width="20%" style="padding: 10px;">
+																	<img src="/images/setting/logo.png" alt="IMG">
+																</td>
+																<td class="text-center" style="padding: 5px 0;">
+																	<h3 class="color_light_blue KHOSMoulLight">'. Auth::user()->setting()->clinic_name_kh .'</h3>
+																</td>
+															</tr>
+															<tr>
+																<td class="text-center" style="padding: 2px 0;">
+																	<h3 class="color_light_blue roboto_b">'. Auth::user()->setting()->clinic_name_en .'</h3>
+																</td>
+															</tr>
+															<tr>
+																<td class="text-center" style="padding: 1px 0;">
+																	<div class="color_light_blue">'. Auth::user()->setting()->description .'</div>
+																</td>
+															</tr>
+															<tr>
+																<td class="text-center" style="padding: 1px 0;">
+																	<div class="color_light_blue">'. Auth::user()->setting()->address .'</div>
+																</td>
+															</tr>
+															<tr>
+																<td class="text-center" style="padding-bottom: 5px;">
+																	<div class="color_light_blue">លេខទូរស័ព្ទ: <b>'. Auth::user()->setting()->phone .'</b></div>
+																</td>
+															</tr>
+														</table>
+														<table class="table-information" width="100%" style="border-top: 2px solid #999; border-bottom: 2px solid #999; margin: 10px 0;">
+															<tr>
+																<td colspan="3">
+																	<h5 class="text-center KHOSMoulLight" style="padding-top: 8px;">វេជ្ជបញ្ជា</h5>
+																</td>
+															</tr>
+															<tr>
+																<td>
+																	កាលបរិច្ឆេទ:<span class="date">'. date('d/m/Y', strtotime($prescription->date)) .'</span>
+																</td>
+																<td width="29%">
+																	លេខអ្នកជំងឺ:<span class="pt_no">'. str_pad($prescription->pt_no, 6, "0", STR_PAD_LEFT) .'</span>
+																</td>
+																<td width="29%">
+																	រោគវិនិច្ឆ័យ:<span class="code">'. $prescription->pt_diagnosis .'</span>
+																</td>
+															</tr>
+															<tr>
+																<td>
+																	ឈ្មោះ:<span class="pt_name">'. $prescription->pt_name .'</span>
+																</td>
+																<td>
+																អាយុ:<span class="pt_age">'. $prescription->pt_age .'</span>
+																</td>
+																<td>
+																	ភេទ:<span class="pt_gender">'. $prescription->pt_gender .'</span>
+																</td>
+															</tr>
+															<tr>
+																<td colspan="3">
+																	អាសយដ្ឋាន: <span class="pt_name">'. (($prescription->pt_village!='')? 'ភូមិ'.$prescription->pt_village : '') . (($prescription->pt_commune!='')? (($prescription->province->name=='ភ្នំពេញ')? ' សង្កាត់'.$prescription->pt_commune : ' ឃុំ'.$prescription->pt_commune) : '') . (($prescription->district->name!='')? (($prescription->province->name=='ភ្នំពេញ')? ' ខណ្ឌ'.$prescription->district->name : ' ស្រុក'.$prescription->district->name) : ''). (($prescription->province->name!='')? (($prescription->province->name=='ភ្នំពេញ')? ' រាជធានីភ្នំពេញ'.$prescription->province->name : ' ខេត្ត'.$prescription->province->name) : '') .'</span>
+																</td>
+															</tr>
+														</table>
+														<table class="table-detail" width="100%">
+															<thead>
+																<th class="text-center" width="5%">ល.រ</th>
+																<th class="text-center">ឈ្មោះថ្នាំ</th>
+																<th class="text-center" width="6%">ព្រឹក</th>
+																<th class="text-center" width="6%">ថ្ងៃ</th>
+																<th class="text-center" width="6%">ល្ងាច</th>
+																<th class="text-center" width="6%">យប់</th>
+																<th class="text-center" width="8%">ចំនួនថ្ងៃ</th>
+																<th class="text-center" width="6%">សរុប</th>
+																<th class="text-center" width="13%">ការប្រើប្រាស់</th>
+																<th class="text-center" width="19%">កំណត់ចំណាំ</th>
+															</thead>
+															<tbody>
+																'. $tbody .'
+															</tbody>
+														</table>
+														<small class="remark">'. $prescription->remark .'</small>
+														<br/>
+														<div class="color_light_blue" style="text-decoration: underline; text-align: center; position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);">សូមយកវេជ្ជបញ្ជាមកវិញពេលមកពិនិត្យលើកក្រោយ</div>
+														<table class="table-footer" style="position: absolute; bottom: 80px; " width="90%">
+															<tr>
+																<td></td>
+																<td width="32%" class="text-center">
+																	<div><b class="color_light_blue" style="font-size: 16px;">គ្រូពេទ្យព្យាបាល</b></div>
+																	<div class="sign_box"></div>
+																	<div style="color: blue;"><span class="color_blue KHOSMoulLight">វេជ្ជ. '. Auth::user()->setting()->sign_name_kh .'</span></div>
+																</td>
+															</tr>
+														</table>
+													</section>';
+			
 
 		return response()->json(['prescription_detail' => $prescription_detail, 'title' => $title]);
 		// return $prescription_detail;

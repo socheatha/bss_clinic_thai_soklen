@@ -12,31 +12,31 @@ class GlobalComponent
 		return '		
 			<table class="table-header" width="100%">
 				<div style="position: absolute; left: 15px; top: 30px; width: 120px;">
-					<img src="/images/setting/'. Auth::user()->setting->logo .'" alt="IMG">
+					<img src="/images/setting/logo.png" alt="IMG">
 				</div>
 				<tr>					
 					<td class="text-center" style="padding: 5px 0;">
-						<h3 class="color_light_blue KHOSMoulLight">'. Auth::user()->setting->clinic_name_kh .'</h3>
+						<h3 class="color_light_blue KHOSMoulLight">'. Auth::user()->setting()->clinic_name_kh .'</h3>
 					</td>
 				</tr>
 				<tr>
 					<td class="text-center" style="padding: 2px 0;">
-						<h3 class="color_light_blue roboto_b">'. Auth::user()->setting->clinic_name_en .'</h3>
+						<h3 class="color_light_blue roboto_b">'. Auth::user()->setting()->clinic_name_en .'</h3>
 					</td>
 				</tr>
 				<tr>
 					<td class="text-center" style="padding: 1px 0;">
-						<div class="color_light_blue">'. Auth::user()->setting->description .'</div>
+						<div class="color_light_blue">'. Auth::user()->setting()->description .'</div>
 					</td>
 				</tr>
 				<tr>
 					<td class="text-center" style="padding: 1px 0;">
-						<div class="color_light_blue">'. Auth::user()->setting->address .'</div>
+						<div class="color_light_blue">'. Auth::user()->setting()->address .'</div>
 					</td>
 				</tr>
 				<tr>
 					<td class="text-center" style="padding-bottom: 5px;">
-						<div class="color_light_blue">លេខទូរស័ព្ទ: <b>'. Auth::user()->setting->phone .'</b></div>
+						<div class="color_light_blue">លេខទូរស័ព្ទ: <b>'. Auth::user()->setting()->phone .'</b></div>
 					</td>
 				</tr>
 			</table>

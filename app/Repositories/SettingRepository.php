@@ -13,7 +13,7 @@ class SettingRepository
 
 	public function update($request)
 	{
-		Auth::user()->setting->update([
+		Auth::user()->setting()->update([
 			'clinic_name_kh'=> $request->clinic_name_kh,
 			'clinic_name_en'=> $request->clinic_name_en,
 			'sign_name_kh'=> $request->sign_name_kh,
@@ -29,17 +29,12 @@ class SettingRepository
 		]);
 
 		if ($request->file('logo')) {
-			$path = public_path().'/images/setting/';
 			$logo = $request->file('logo');
-			$setting_logo = ((Auth::user()->setting->logo!='logo.png')? Auth::user()->setting->logo : Auth::user()->setting->id .'_logo.png');
-			Auth::user()->setting->update([
-				'logo'=> $setting_logo,
-			]);
-
-			$img = Image::make($logo->getRealPath())->save($path.$setting_logo);
+			$path = public_path().'/images/setting/logo.png';
+			$img = Image::make($logo->getRealPath())->save($path);
 		}
 
-		return Auth::user()->setting;
+		return Auth::user()->setting();
 
 	}
 

@@ -1,7 +1,7 @@
 
 
 <!-- Navbar -->
-<nav class="main-header navbar navbar-expand {{ ((Auth::user()->setting->navbar_color != '')? Auth::user()->setting->navbar_color : 'navbar-white navbar-light') }}">
+<nav class="main-header navbar navbar-expand {{ ((Auth::user()->setting()->navbar_color != '')? Auth::user()->setting()->navbar_color : 'navbar-white navbar-light') }}">
 	<!-- Left navbar links -->
 	<ul class="navbar-nav">
 		<li class="nav-item btn">

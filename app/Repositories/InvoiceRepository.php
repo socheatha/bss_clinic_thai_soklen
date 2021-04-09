@@ -92,35 +92,34 @@ class InvoiceRepository
 		if(empty($invoice->province)){ $invoice->province = new \stdClass(); $invoice->province->name = ''; }
 		if(empty($invoice->district)){ $invoice->district = new \stdClass(); $invoice->district->name = ''; }
 
-	if (Auth::user()->roles->first()->name == 'THAI SOKLEN CLINIC') {
 		$invoice_detail = '<section class="invoice-print" style="position: relative;">
 												<table class="table-header" width="100%">
 													<tr>
 														<td rowspan="5" width="20%" style="padding: 10px;">
-															<img src="/images/setting/'. Auth::user()->setting->logo .'" alt="IMG">
+															<img src="/images/setting/logo.png" alt="IMG">
 														</td>
 														<td class="text-center" style="padding: 5px 0;">
-															<h3 class="color_blue KHOSMoulLight" style="color: blue;">'. Auth::user()->setting->clinic_name_kh .'</h3>
+															<h3 class="color_blue KHOSMoulLight" style="color: blue;">'. Auth::user()->setting()->clinic_name_kh .'</h3>
 														</td>
 													</tr>
 													<tr>
 														<td class="text-center" style="padding: 2px 0;">
-															<h3 class="color_red roboto_b" style="color: red;">'. Auth::user()->setting->clinic_name_en .'</h3>
+															<h3 class="color_red roboto_b" style="color: red;">'. Auth::user()->setting()->clinic_name_en .'</h3>
 														</td>
 													</tr>
 													<tr>
 														<td class="text-center" style="padding: 1px 0;">
-															<div>'. Auth::user()->setting->description .'</div>
+															<div>'. Auth::user()->setting()->description .'</div>
 														</td>
 													</tr>
 													<tr>
 														<td class="text-center" style="padding: 1px 0;">
-															<div>'. Auth::user()->setting->address .'</div>
+															<div>'. Auth::user()->setting()->address .'</div>
 														</td>
 													</tr>
 													<tr>
 														<td class="text-center" style="padding-bottom: 5px;">
-															<div>លេខទូរស័ព្ទ: <b>'. Auth::user()->setting->phone .'</b></div>
+															<div>លេខទូរស័ព្ទ: <b>'. Auth::user()->setting()->phone .'</b></div>
 														</td>
 													</tr>
 												</table>
@@ -195,122 +194,13 @@ class InvoiceRepository
 														<td width="32%" class="text-center">
 															<div><b class="color_light_blue" style="font-size: 16px;">គ្រូពេទ្យព្យាបាល</b></div>
 															<div class="sign_box"></div>
-															<div style="color: blue;"><span class="color_blue KHOSMoulLight">វេជ្ជ. '. Auth::user()->setting->sign_name_kh .'</span></div>
+															<div style="color: blue;"><span class="color_blue KHOSMoulLight">វេជ្ជ. '. Auth::user()->setting()->sign_name_kh .'</span></div>
 														</td>
 													</tr>
 												</table>
 											</section>';
-	}else{
-		$invoice_detail = '<section class="invoice-print" style="position: relative;">
-												<table class="table-header" width="100%">
-													<tr>
-														<td rowspan="5" width="20%" style="padding: 10px;">
-															<img src="/images/setting/'. Auth::user()->setting->logo .'" alt="IMG">
-														</td>
-														<td class="text-center" style="padding: 5px 0;">
-															<h3 class="color_blue KHOSMoulLight" style="color: blue;">'. Auth::user()->setting->clinic_name_kh .'</h3>
-														</td>
-													</tr>
-													<tr>
-														<td class="text-center" style="padding: 2px 0;">
-															<h3 class="color_red roboto_b" style="color: red;">'. Auth::user()->setting->clinic_name_en .'</h3>
-														</td>
-													</tr>
-													<tr>
-														<td class="text-center" style="padding: 1px 0;">
-															<div>'. Auth::user()->setting->description .'</div>
-														</td>
-													</tr>
-													<tr>
-														<td class="text-center" style="padding: 1px 0;">
-															<div>'. Auth::user()->setting->address .'</div>
-														</td>
-													</tr>
-													<tr>
-														<td class="text-center" style="padding-bottom: 5px;">
-															<div>លេខទូរស័ព្ទ: '. Auth::user()->setting->phone .'</div>
-														</td>
-													</tr>
-												</table>
-												<table class="table-information" width="100%" style="border-top: 4px solid red; border-bottom: 4px solid red; margin: 10px 0;">
-													<tr>
-														<td colspan="3">
-															<h5 class="text-center KHOSMoulLight" style="padding-top: 8px;">វិក្កយបត្រ</h5>
-														</td>
-													</tr>
-													<tr>
-														<td>
-															កាលបរិច្ឆេទ:<span class="date">'. date('d/m/Y', strtotime($invoice->date)) .'</span>
-														</td>
-														<td width="29%">
-															លេខអ្នកជំងឺ:<span class="pt_no">'. str_pad($invoice->pt_no, 6, "0", STR_PAD_LEFT) .'</span>
-														</td>
-														<td width="29%">
-															រោគវិនិច្ឆ័យ:<span class="inv_number">'. $invoice->pt_diagnosis .'</span>
-														</td>
-													</tr>
-													<tr>
-														<td>
-															ឈ្មោះ:<span class="pt_name">'. $invoice->pt_name .'</span>
-														</td>
-														<td>
-															ភេទ:<span class="pt_gender">'. $invoice->pt_gender .'</span>
-														</td>
-														<td>
-															ទូរស័ព្ទ:<span class="pt_phone">'. $invoice->pt_phone .'</span>
-														</td>
-													</tr>
-													<tr>
-														<td colspan="3">
-															អាសយដ្ឋាន: <span class="pt_name">'. (($invoice->pt_village!='')? 'ភូមិ'.$invoice->pt_village : '') . (($invoice->pt_commune!='')? (($invoice->province->name=='ភ្នំពេញ')? ' សង្កាត់'.$invoice->pt_commune : ' ឃុំ'.$invoice->pt_commune) : '') . (($invoice->district->name!='')? (($invoice->province->name=='ភ្នំពេញ')? ' ខណ្ឌ'.$invoice->district->name : ' ស្រុក'.$invoice->district->name) : ''). (($invoice->province->name!='')? (($invoice->province->name=='ភ្នំពេញ')? ' រាជធានីភ្នំពេញ'.$invoice->province->name : ' ខេត្ត'.$invoice->province->name) : '') .'</span>
-														</td>
-													</tr>
-												</table>
-												<table class="table-detail" width="100%">
-													<thead>
-														<th class="text-center" width="8%">
-															<div>ល.រ</div>
-														</th>
-														<th colspan="3" class="text-center">
-															<div>បរិយាយ</div>
-														</th>
-														<th class="text-center" width="16%">
-															<div>តម្លៃ</div>
-														</th>
-													</thead>
-													<tbody>
-														'. $tbody .'
-													</tbody>
-													<tfoot>
-														<tr>
-															<th colspan="2" width="38%"><small>*** '. $grand_total_in_word .' ***</small></th>
-															<th width="30%" class="text-right">សរុប</th>
-															<th class="text-right sub_total_riel">'. $total_riel .' ៛</th>
-															<th class="text-right sub_total_dollar"><span class="float-left pull-left">$</span> '. number_format($total, 2) .'</th>
-														</tr>
-														<tr>
-															<th colspan="2"><small>*** '. $grand_total_riel_in_word .' ***</small></th>
-															<th colspan="4" class="text-right"></th>
-														</tr>
-													</tfoot>
-												</table>
-												<small class="remark">'. $invoice->remark .'</small>
-												<br/>
-												<div class="color_red" style="color: red; text-decoration: underline; text-align: center; position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);">សូមយកវេជ្ជបញ្ជាមកវិញពេលមកពិនិត្យលើក្រោយ</div>
-												<table class="table-footer" width="100%">
-													<tr>
-														<td></td>
-														<td width="32%" class="text-center">
-															<div><b>គ្រូពេទ្យព្យាបាល</b></div>
-															<div class="sign_box"></div>
-															<div style="color: blue;"><span class="color_blue KHOSMoulLight">'. Auth::user()->setting->sign_name_kh .'</span></div>
-														</td>
-													</tr>
-												</table>
-											</section>';
-	}
 	
-											return response()->json(['invoice_detail' => $invoice_detail, 'title' => $title]);
+		return response()->json(['invoice_detail' => $invoice_detail, 'title' => $title]);
 		// return $invoice_detail;
 
 	}
