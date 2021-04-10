@@ -42,7 +42,7 @@
 	{!! Form::hidden('_method', 'PUT') !!}
 
 	<div class="card-body">
-		@include('prescription.form')
+		@include('prescription.form', ['pre_select_obj' => $prescription])
 
 		<div class="card card-outline card-primary mt-4">
 			<div class="card-header">
@@ -240,51 +240,11 @@
 
 @section('js')
 <script type="text/javascript">
-	var firstLoadPatient = true;
-	var endLoadPatientChnaged = function() {}
-	var endLoadProvinceChanged = function() {}
-
-	$('[name="pt_province_id"]').change(function(e) {
-		if ($(this).val() != '') {
-			$.ajax({
-				url: "{{ route('province.getSelectDistrict') }}",
-				method: 'post',
-				data: {
-					id: $(this).val(),
-				},
-				success: function(data) {
-					$('[name="pt_district_id"]').attr({
-						"disabled": false
-					});
-					$('[name="pt_district_id"]').html(data);
-					endLoadProvinceChanged();
-					endLoadProvinceChanged = function() {};
-				}
-			});
-		} else {
-			$('[name="pt_district_id"]').attr({
-				"disabled": true
-			});
-			$('[name="pt_district_id"]').html('<option value="">{{ __("label.form.choose") }}</option>');
-
-		}
-	});
-
-
 	$('.btn-prevent-submit').click(function(event) {
 		event.preventDefault();
 	});
 
 	$(document).ready(function() {
-
-		setTimeout(() => {
-			endLoadPatientChnaged = function () {
-				
-				$("[name='pt_province_id']").val("{{ $prescription->pt_province_id }}").trigger('change');
-			}
-			$(".select2_pagination").val("{{ $prescription->patient_id }}").trigger("change");
-		}, 100);
-
 		var data = [];
 		$(".select2_pagination").each(function() {
 			data.push({
@@ -360,7 +320,6 @@
 				$('#edit_prescription_item_modal').modal('show');
 			});
 	};
-
 
 	function deletePrescriptionDetail(id) {
 
@@ -596,48 +555,6 @@
 				text: "{{ __('alert.swal.text.empty_field') }}",
 				confirmButtonText: "{{ __('alert.swal.button.yes') }}",
 			})
-		}
-	});
-
-
-	$('#patient_id').change(function() {
-		if ($(this).val() != '') {
-			$.ajax({
-				url: "{{ route('patient.getSelectDetail') }}",
-				type: 'post',
-				data: {
-					id: $(this).val()
-				},
-			})
-			.done(function(result) {
-				if (firstLoadPatient){
-					firstLoadPatient = false;
-					// $("[name='pt_no']").val("{{ $prescription->pt_no }}");
-					$("[name='pt_name']").val("{{ $prescription->pt_name }}");
-					$("[name='pt_age']").val("{{ $prescription->pt_age }}");
-					$("[name='pt_gender']").val("{{ $prescription->pt_gender }}");
-					$("[name='pt_phone']").val("{{ $prescription->pt_phone }}");
-					$("[name='pt_village']").val("{{ $prescription->pt_village }}");
-					$("[name='pt_commune']").val("{{ $prescription->pt_commune }}");
-
-					endLoadProvinceChanged = function () {
-						$("[name='pt_district_id']").val("{{ $prescription->pt_district_id }}").trigger('change');
-					}
-				}else{
-					// $('[name="pt_no"]').val(result.patient.no);
-					$('[name="pt_name"]').val(result.patient.name);
-					$('[name="pt_phone"]').val(result.patient.phone);
-					$('[name="pt_age"]').val(result.patient.age);
-					$('[name="pt_gender"]').val(result.patient.pt_gender);
-					$('[name="pt_village"]').val(result.patient.address_village);
-					$('[name="pt_commune"]').val(result.patient.address_commune);
-
-					endLoadProvinceChanged = function() {
-						$('[name="pt_district_id"]').val(result.patient.address_district_id).trigger('change');
-					};
-					$('[name="pt_province_id"]').val(result.patient.address_province_id).trigger('change');
-				}
-			});
 		}
 	});
 

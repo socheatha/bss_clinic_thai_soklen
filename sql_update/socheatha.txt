@@ -1,9 +1,0 @@
-ALTER TABLE `services`  ADD `is_labor` ENUM('0','1') NOT NULL DEFAULT '0'  AFTER `description`;
-ALTER TABLE `services` CHANGE `price` `price` DOUBLE NOT NULL DEFAULT '0';
-ALTER TABLE `prescription_details`  ADD `qty_days` VARCHAR(191) NOT NULL DEFAULT '0'  AFTER `night`;
-
-
-==============================06/03/2021=================================
-ALTER TABLE `labors`  ADD `price` VARCHAR(191) NOT NULL DEFAULT '0'  AFTER `pt_province_id`,  ADD `type` TINYINT(3) NOT NULL DEFAULT '1'  AFTER `price`;
-ALTER TABLE `labors` CHANGE `type` `labor_type` TINYINT(3) NOT NULL DEFAULT '1';
-ALTER TABLE `labors`  ADD `simple_labor_detail` TEXT NULL  AFTER `remark`;

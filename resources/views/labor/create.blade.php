@@ -207,8 +207,6 @@
 		]
 	});
 
-	var endLoadScript = function () {} // declear global variable as function
-
 	$('#btn_add_service').click(function () {
 		$('#create_labor_item_modal').modal();
 		$('#category_id').val('1').trigger('change');
@@ -279,27 +277,6 @@
 	$('.chb_service').on('ifChecked', function (event) {
 		if ($('.chb_service').filter(':checked').length == $('.chb_service').length) {
 			$('#check_all_service').iCheck('check');
-		}
-	});
-
-	$('[name="pt_province_id"]').change( function(e){
-		if ($(this).val() != '') {
-			$.ajax({
-				url: "{{ route('province.getSelectDistrict') }}",
-				method: 'post',
-				data: {
-					id: $(this).val(),
-				},
-				success: function (data) {
-					$('[name="pt_district_id"]').attr({"disabled":false});
-					$('[name="pt_district_id"]').html(data);
-					endLoadScript(); endLoadScript = function () {}; // execute this function then remove it
-				}
-			});
-		}else{
-			$('[name="pt_district_id"]').attr({"disabled":true});
-			$('[name="pt_district_id"]').html('<option value="">{{ __("label.form.choose") }}</option>');
-			
 		}
 	});
 
@@ -380,33 +357,5 @@
 		if($('option[value="'+value+'"]').data('price')) $('#input-price-'+id).val($('option[value="'+value+'"]').data('price'));
 		if($('option[value="'+value+'"]').data('description')) $('#input-description-'+id).val($('option[value="'+value+'"]').data('description'));
 	}
-
-	$('#patient_id').change(function () {
-		if ($(this).val()!='') {
-			$.ajax({
-				url: "{{ route('patient.getSelectDetail') }}",
-				type: 'post',
-				data: {
-					id : $(this).val()
-				},
-			})
-			.done(function( result ) {
-				// $('[name="pt_no"]').val(result.patient.no);
-				$('[name="pt_name"]').val(result.patient.name);
-				$('[name="pt_phone"]').val(result.patient.phone);
-				$('[name="pt_age"]').val(result.patient.age);
-				$('[name="pt_gender"]').val(result.patient.pt_gender);
-				$('[name="pt_village"]').val(result.patient.address_village);
-				$('[name="pt_commune"]').val(result.patient.address_commune);
-				
-				endLoadScript = function () { $('[name="pt_district_id"]').val(result.patient.address_district_id).trigger('change'); } // set task for function waiting for execute
-				$('[name="pt_province_id"]').val(result.patient.address_province_id).trigger('change');
-			});
-		}
-		
-	});
-
-
-
 </script>
 @endsection

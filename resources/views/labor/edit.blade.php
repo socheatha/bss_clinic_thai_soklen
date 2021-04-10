@@ -40,7 +40,7 @@
 	{!! Form::hidden('_method', 'PUT') !!}
 
 	<div class="card-body">
-		@include('labor.form')
+		@include('labor.form', ['pre_select_obj' => $labor])
 		@if(in_array($labor_type, [1, 2]))
 			<div class="card card-outline card-primary mt-4">
 				<div class="card-header">
@@ -215,10 +215,6 @@
 		]
 	});
 
-	var firstLoadPatient = true;
-	var endLoadPatientChnaged = function() {}
-	var endLoadProvinceChanged = function() {}
-
 	$('#btn_add_service').click(function () {
 		$('#create_labor_item_modal').modal();
 		$('#category_id').val('1').trigger('change');
@@ -292,27 +288,6 @@
 		}
 	});
 
-	$('[name="pt_province_id"]').change( function(e){
-		if ($(this).val() != '') {
-			$.ajax({
-				url: "{{ route('province.getSelectDistrict') }}",
-				method: 'post',
-				data: {
-					id: $(this).val(),
-				},
-				success: function (data) {
-					$('[name="pt_district_id"]').attr({"disabled":false});
-					$('[name="pt_district_id"]').html(data);
-					endLoadProvinceChanged(); endLoadProvinceChanged = function () {};
-				}
-			});
-		}else{
-			$('[name="pt_district_id"]').attr({"disabled":true});
-			$('[name="pt_district_id"]').html('<option value="">{{ __("label.form.choose") }}</option>');
-			
-		}
-	});
-
 	$('.btn-prevent-submit').click(function (event) {
 		event.preventDefault();
 	});
@@ -375,11 +350,6 @@
 	}
 
 	$( document ).ready(function() {
-
-		setTimeout(() => {
-			$(".select2_pagination").val("{{ $labor->patient_id }}").trigger("change");
-		}, 100);
-
 		var data = [];
 		$(".select2_pagination").each(function () {
 			data.push({id:'{{ $labor->patient_id }}', text:'{{ str_pad($labor->patient_id, 6, "0", STR_PAD_LEFT) }} :: {{ (($labor->patient_id != '')? $labor->patient->name : '' )}}'});
@@ -469,43 +439,5 @@
 		})
 	};
 
-	$('#patient_id').change(function () {
-		if ($(this).val()!='') {
-			$.ajax({
-				url: "{{ route('patient.getSelectDetail') }}",
-				type: 'post',
-				data: {
-					id : $(this).val()
-				},
-			})
-			.done(function( result ) {
-				if(firstLoadPatient){
-					firstLoadPatient = false;
-					// $("[name='pt_no']").val("{{ $labor->pt_no }}");
-					$("[name='pt_name']").val("{{ $labor->pt_name }}");
-					$("[name='pt_age']").val("{{ $labor->pt_age }}");
-					$("[name='pt_gender']").val("{{ $labor->pt_gender }}");
-					$("[name='pt_phone']").val("{{ $labor->pt_phone }}");
-					$("[name='pt_village']").val("{{ $labor->pt_village }}");
-					$("[name='pt_commune']").val("{{ $labor->pt_commune }}");
-
-					endLoadProvinceChanged = function () { $("[name='pt_district_id']").val("{{ $labor->pt_district_id }}").trigger('change'); }
-					$("[name='pt_province_id']").val("{{ $labor->pt_province_id }}").trigger('change');
-				}else{
-					// $('[name="pt_no"]').val(result.patient.no);
-					$('[name="pt_name"]').val(result.patient.name);
-					$('[name="pt_phone"]').val(result.patient.phone);
-					$('[name="pt_age"]').val(result.patient.age);
-					$('[name="pt_gender"]').val(result.patient.pt_gender);
-					$('[name="pt_village"]').val(result.patient.address_village);
-					$('[name="pt_commune"]').val(result.patient.address_commune);
-
-					endLoadProvinceChanged = function () { $('[name="pt_district_id"]').val(result.patient.address_district_id).trigger('change'); }
-					$('[name="pt_province_id"]').val(result.patient.address_province_id).trigger('change');
-				}
-			});
-		}
-		
-	});
 </script>
 @endsection

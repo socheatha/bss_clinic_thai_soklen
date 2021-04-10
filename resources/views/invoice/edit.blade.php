@@ -28,7 +28,7 @@
 	{!! Form::hidden('_method', 'PUT') !!}
 
 	<div class="card-body">
-		@include('invoice.form')
+		@include('invoice.form', ['pre_select_obj' => $invoice])
 		
 		<div class="card card-outline card-primary mt-4">
 			<div class="card-header">
@@ -168,102 +168,75 @@
 
 @section('js')
 <script type="text/javascript">
-	var firstLoadPatient = true;
-	var endLoadPatientChnaged = function() {}
-	var endLoadProvinceChanged = function() {}
-
-	$('[name="pt_province_id"]').change( function(e){
-		if ($(this).val() != '') {
-			$.ajax({
-				url: "{{ route('province.getSelectDistrict') }}",
-				method: 'post',
-				data: {
-					id: $(this).val(),
-				},
-				success: function (data) {
-					$('[name="pt_district_id"]').attr({"disabled":false});
-					$('[name="pt_district_id"]').html(data);
-					endLoadProvinceChanged(); endLoadProvinceChanged = function () {};
-				}
-			});
-		}else{
-			$('[name="pt_district_id"]').attr({"disabled":true});
-			$('[name="pt_district_id"]').html('<option value="">{{ __("label.form.choose") }}</option>');
-			
-		}
-	});
-
-
 	$('.btn-prevent-submit').click(function (event) {
 		event.preventDefault();
 	});
 
 
-		$('#btn_save_service').click(function () {
-			if ($('[name="service_name"]').val()!='' && $('[name="service_price"]').val()!='') {
-				$.ajax({
-					url: "{{ route('service.createService') }}",
-					method: 'post',
-					data: {
-						name: $('[name="service_name"]').val(),
-						price: $('[name="service_price"]').val(),
-						description: $('[name="service_description"]').val(),
-					},
-					success: function(data){
-						$('#create_service_modal .invalid-feedback').remove();
-						$('#create_service_modal .form-control').removeClass('is-invalid');
-						if (data.errors) {
-							$.each(data.errors, function(key, value){
-								console.log(key);
-								$('#create_service_modal .service'+key+' input').addClass('is-invalid');
-								$('#create_service_modal .service'+key).append('<span class="invalid-feedback">'+value+'</span>');
-							});
-							Swal.fire({
-								icon: 'error',
-								title: "{{ __('alert.swal.result.title.error') }}",
-								confirmButtonText: "{{ __('alert.swal.button.yes') }}",
-								timer: 1500
-							})
-						}
-						if (data.success) {
-							$('[name="service_name"]').val('');
-							$('[name="service_price"]').val('');
-							$('[name="service_description"]').val('');
-							
-							$('#create_service_modal').modal('hide');
-							reloadSelectService(data.service.id)
-							Swal.fire({
-								icon: 'success',
-								title: "{{ __('alert.swal.result.title.success') }}",
-								confirmButtonText: "{{ __('alert.swal.button.yes') }}",
-								timer: 1500
-							})
-						}
-					}
-				});
-			}else{
-				Swal.fire({
-					icon: 'warning',
-					title: "{{ __('alert.swal.title.empty_field') }}",
-					confirmButtonText: "{{ __('alert.swal.button.yes') }}",
-				})
-			}
-		});
-
-		function reloadSelectService(id) {
-			
+	$('#btn_save_service').click(function () {
+		if ($('[name="service_name"]').val()!='' && $('[name="service_price"]').val()!='') {
 			$.ajax({
-				url: "{{ route('service.reloadSelectService') }}",
+				url: "{{ route('service.createService') }}",
 				method: 'post',
 				data: {
+					name: $('[name="service_name"]').val(),
+					price: $('[name="service_price"]').val(),
+					description: $('[name="service_description"]').val(),
 				},
 				success: function(data){
-					$('#item_service_id').html(data);
-					$('#item_service_id').val(id).trigger('change');
-
+					$('#create_service_modal .invalid-feedback').remove();
+					$('#create_service_modal .form-control').removeClass('is-invalid');
+					if (data.errors) {
+						$.each(data.errors, function(key, value){
+							console.log(key);
+							$('#create_service_modal .service'+key+' input').addClass('is-invalid');
+							$('#create_service_modal .service'+key).append('<span class="invalid-feedback">'+value+'</span>');
+						});
+						Swal.fire({
+							icon: 'error',
+							title: "{{ __('alert.swal.result.title.error') }}",
+							confirmButtonText: "{{ __('alert.swal.button.yes') }}",
+							timer: 1500
+						})
+					}
+					if (data.success) {
+						$('[name="service_name"]').val('');
+						$('[name="service_price"]').val('');
+						$('[name="service_description"]').val('');
+						
+						$('#create_service_modal').modal('hide');
+						reloadSelectService(data.service.id)
+						Swal.fire({
+							icon: 'success',
+							title: "{{ __('alert.swal.result.title.success') }}",
+							confirmButtonText: "{{ __('alert.swal.button.yes') }}",
+							timer: 1500
+						})
+					}
 				}
 			});
+		}else{
+			Swal.fire({
+				icon: 'warning',
+				title: "{{ __('alert.swal.title.empty_field') }}",
+				confirmButtonText: "{{ __('alert.swal.button.yes') }}",
+			})
 		}
+	});
+
+	function reloadSelectService(id) {		
+		$.ajax({
+			url: "{{ route('service.reloadSelectService') }}",
+			method: 'post',
+			data: {
+			},
+			success: function(data){
+				$('#item_service_id').html(data);
+				$('#item_service_id').val(id).trigger('change');
+
+			}
+		});
+	}
 
 	function select2_search (term) {
 		$(".select2_pagination").select2('open');
@@ -273,11 +246,6 @@
 	}
 
 	$( document ).ready(function() {
-
-		setTimeout(() => {
-			$(".select2_pagination").val("{{ $invoice->patient_id }}").trigger("change");
-		}, 100);
-
 		var data = [];
 		$(".select2_pagination").each(function () {
 			data.push({id:'{{ $invoice->patient_id }}', text:'{{ str_pad($invoice->patient_id, 6, "0", STR_PAD_LEFT) }} :: {{ (($invoice->patient_id != '')? $invoice->patient->name : '' )}}'});
@@ -571,46 +539,6 @@
 				confirmButtonText: "{{ __('alert.swal.button.yes') }}",
 			})
 		}
-	});
-
-
-	$('#patient_id').change(function () {
-		if ($(this).val()!='') {
-			$.ajax({
-				url: "{{ route('patient.getSelectDetail') }}",
-				type: 'post',
-				data: {
-					id : $(this).val()
-				},
-			})
-			.done(function( result ) {
-				if(firstLoadPatient){
-					firstLoadPatient = false;
-					// $("[name='pt_no']").val("{{ $invoice->pt_no }}");
-					$("[name='pt_name']").val("{{ $invoice->pt_name }}");
-					$("[name='pt_age']").val("{{ $invoice->pt_age }}");
-					$("[name='pt_gender']").val("{{ $invoice->pt_gender }}");
-					$("[name='pt_phone']").val("{{ $invoice->pt_phone }}");
-					$("[name='pt_village']").val("{{ $invoice->pt_village }}");
-					$("[name='pt_commune']").val("{{ $invoice->pt_commune }}");
-
-					endLoadProvinceChanged = function () { $("[name='pt_district_id']").val("{{ $invoice->pt_district_id }}").trigger('change'); }
-					$("[name='pt_province_id']").val("{{ $invoice->pt_province_id }}").trigger('change');
-				}else{
-					// $('[name="pt_no"]').val(result.patient.no);
-					$('[name="pt_name"]').val(result.patient.name);
-					$('[name="pt_phone"]').val(result.patient.phone);
-					$('[name="pt_age"]').val(result.patient.age);
-					$('[name="pt_gender"]').val(result.patient.pt_gender);
-					$('[name="pt_village"]').val(result.patient.address_village);
-					$('[name="pt_commune"]').val(result.patient.address_commune);
-
-					endLoadProvinceChanged = function () { $('[name="pt_district_id"]').val(result.patient.address_district_id).trigger('change'); }
-					$('[name="pt_province_id"]').val(result.patient.address_province_id).trigger('change');
-				}
-			});
-		}
-		
 	});
 </script>
 @endsection
