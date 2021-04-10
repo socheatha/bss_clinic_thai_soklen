@@ -94,7 +94,7 @@
 	$( document ).ready(function() {
 		var data = [];
 		$(".select2_pagination").each(function () {
-			data.push({id:'{{ $echoes->patient_id }}', text:'PT-{{ str_pad($echoes->patient_id, 6, "0", STR_PAD_LEFT) }} :: {{ $echoes->patient->name }}'});
+			data.push({id:'{{ $echoes->patient_id }}', text:'PT-{{ str_pad($echoes->patient_id, 6, "0", STR_PAD_LEFT) }} :: {{ ($echoes->patient->name != '' ? $echoes->patient->name : '') }}'});
 		});
 		$(".select2_pagination").select2({
 			theme: 'bootstrap4',

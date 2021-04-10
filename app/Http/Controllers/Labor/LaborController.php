@@ -145,7 +145,7 @@ class LaborController extends Controller
 			'labor' => $labor,
 			'provinces' => Province::getSelectData(),
 			'categories' => LaborCategory::getSelectData('id', 'name', '', 'id' ,'asc'),
-			'districts' => (($labor->pt_district_id=='')? [] : $labor->province->getSelectDistrict()),
+			'districts' => $labor->pt_province_id && $labor->pt_district_id ? $labor->province->getSelectDistrict() : [],
 			'medicines' => Medicine::getSelectData('id', 'name', '', 'name' ,'asc'),
 			'services' => Service::select('id', 'name', 'price', 'description')->orderBy('name' ,'asc')->get(),
 			'patients' => Patient::getSelectData('id', 'name', '', 'name' ,'asc'),

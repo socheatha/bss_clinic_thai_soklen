@@ -158,7 +158,7 @@ class PrescriptionController extends Controller
 
 		$this->data = [
 			'provinces' => Province::getSelectData(),
-			'districts' => (($prescription->pt_district_id=='')? [] : $prescription->province->getSelectDistrict()),
+			'districts' => $prescription->pt_province_id && $prescription->pt_district_id ? $prescription->province->getSelectDistrict() : [],
 			'prescription' => $prescription,
 			'medicines' => Medicine::getSelectData('id', 'name', '', 'name' ,'asc'),
 			'patients' => Patient::getSelectData('id', 'name', '', 'name' ,'asc'),

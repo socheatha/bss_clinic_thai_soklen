@@ -142,11 +142,10 @@ class InvoiceController extends Controller
 
 	public function edit(Invoice $invoice)
 	{
-
 		$this->data = [
 			'invoice' => $invoice,
 			'provinces' => Province::getSelectData(),
-			'districts' => (($invoice->pt_district_id=='')? [] : $invoice->province->getSelectDistrict()),
+			'districts' => $invoice->pt_province_id && $invoice->pt_district_id ? $invoice->province->getSelectDistrict() : [],
 			'medicines' => Medicine::getSelectData('id', 'name', '', 'name' ,'asc'),
 			'services' => Service::select('id', 'name', 'price', 'description')->orderBy('name' ,'asc')->get(),
 			'patients' => Patient::getSelectData('id', 'name', '', 'name' ,'asc'),

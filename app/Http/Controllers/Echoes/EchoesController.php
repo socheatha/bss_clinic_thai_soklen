@@ -102,7 +102,7 @@ class EchoesController extends Controller
 		if ($echo_default_description != null) {
 			$this->data = [
 				'provinces' => Province::getSelectData(),
-				'districts' => (($echoes->pt_district_id=='')? [] : $echoes->province->getSelectDistrict()),
+				'districts' => $echoes->pt_province_id && $echoes->pt_district_id ? $echoes->province->getSelectDistrict() : []	,
 				'echo_default_description' => $echo_default_description,
 				'echoes_preview' => $this->echoes->getEchoesPreview($echoes->id)->getData()->echoes_detail,
 				'echoes' => $echoes,
