@@ -560,12 +560,12 @@
 
 	$(document).ready(function() {		
 		$(document).on('mouseout change', '#item_morning, #item_afternoon, #item_evening, #item_night, #item_qty_days', function() {
-			let _total = (parseInt($('#item_morning').val()) + parseInt($('#item_afternoon').val()) + parseInt($('#item_evening').val()) + parseInt($('#item_night').val())) * parseInt($('#item_qty_days').val());
+			let _total = (bss_number($('#item_morning').val()) + bss_number($('#item_afternoon').val()) + bss_number($('#item_evening').val()) + bss_number($('#item_night').val())) * bss_number($('#item_qty_days').val());
 			$('#item_total').val(_total);
 		});
 
 		$(document).on('mouseout change', '#edit_item_morning, #edit_item_afternoon, #edit_item_evening, #edit_item_night, #edit_item_qty_days', function() {
-			let _total = (parseInt($('#edit_item_morning').val()) + parseInt($('#edit_item_afternoon').val()) + parseInt($('#edit_item_evening').val()) + parseInt($('#edit_item_night').val())) * parseInt($('#edit_item_qty_days').val());
+			let _total = (bss_number($('#edit_item_morning').val()) + bss_number($('#edit_item_afternoon').val()) + bss_number($('#edit_item_evening').val()) + bss_number($('#edit_item_night').val())) * bss_number($('#edit_item_qty_days').val());
 			$('#edit_item_total').val(_total);
 		});
 	});

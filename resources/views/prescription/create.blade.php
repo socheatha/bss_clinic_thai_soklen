@@ -171,7 +171,7 @@
 		
 		$(document).on('mouseout change', '[name="morning[]"], [name="afternoon[]"], [name="evening[]"], [name="night[]"], [name="qty_days[]"]', function() {
 			let _parent = $(this).parents('.prescription_item');
-			let _total = (parseInt(_parent.find('[name="morning[]').val()) + parseInt(_parent.find('[name="afternoon[]').val()) + parseInt(_parent.find('[name="evening[]').val()) + parseInt(_parent.find('[name="night[]').val())) * parseInt(_parent.find('[name="qty_days[]').val());
+			let _total = (bss_number(_parent.find('[name="morning[]').val()) + bss_number(_parent.find('[name="afternoon[]').val()) + bss_number(_parent.find('[name="evening[]').val()) + bss_number(_parent.find('[name="night[]').val())) * bss_number(_parent.find('[name="qty_days[]').val());
 			_parent.find('[name="total[]').val(_total);
 		});
 	});

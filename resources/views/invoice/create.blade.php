@@ -61,7 +61,6 @@
 		$('#btn_add_item').click();
 	});
 
-
 	$('.btn-prevent-submit').click(function (event) {
 		event.preventDefault();
 	});

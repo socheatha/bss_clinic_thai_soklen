@@ -172,7 +172,6 @@
 		event.preventDefault();
 	});
 
-
 	$('#btn_save_service').click(function () {
 		if ($('[name="service_name"]').val()!='' && $('[name="service_price"]').val()!='') {
 			$.ajax({
@@ -329,7 +328,6 @@
 		});
 	};
 	
-
 	function deleteInvoiceDetail(id) {
 		
 		const swalWithBootstrapButtons = Swal.mixin({

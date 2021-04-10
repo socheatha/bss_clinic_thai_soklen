@@ -140,7 +140,7 @@ $(document).ready(function () {
                 });
             }else{
                 $('[name="pt_district_id"]').attr({"disabled":true});
-                $('[name="pt_district_id"]').html('<option value="">{{ __("label.form.choose") }}</option>');
+                $('[name="pt_district_id"]').html('<option value="">----------------------</option>');
                 
             }
         });
