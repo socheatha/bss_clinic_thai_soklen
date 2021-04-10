@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\Storage;
 use App\Models\User;
 use App\Models\Patient;
 use App\Models\Doctor;
@@ -54,7 +55,8 @@ class HomeController extends Controller
 		$cmd = \AppHelper::GetMySqlDump() . ' -h ' . env('DB_HOST') . ' -u ' . env('DB_USERNAME') . (env('DB_PASSWORD') ? ' -p"' . env('DB_PASSWORD') . '"' : '') . ' --databases ' . env('DB_DATABASE');
 		$output = [];
 		exec($cmd, $output);
-		$output = implode($output, "\n");
+		$output = implode("\n",$output);
+		// return $output;
 		$file_name =  date('Ymd-His') . '_' . Auth::user()->email . '.sql';
 		return Storage::disk('ftp')->put(date("Y") . '/' . date("F") . '/' . $file_name, $output) ?: 0;
 	}

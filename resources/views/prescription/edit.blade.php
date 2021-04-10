@@ -31,10 +31,9 @@
 			@endcan
 		</div>
 
-		{{--
 		<!-- Error Message -->
 		@component('components.crud_alert')
-		@endcomponent --}}
+		@endcomponent
 
 	</div>
 

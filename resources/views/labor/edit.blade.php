@@ -34,6 +34,10 @@
 			@endcan
 		</div>
 
+		<!-- Error Message -->
+		@component('components.crud_alert')
+		@endcomponent
+
 	</div>
 
 	{!! Form::open(['url' => route('labor.update', $labor->id),'id' => 'submitForm','method' => 'post','class' => 'mt-3']) !!}
