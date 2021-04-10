@@ -76,12 +76,10 @@ class GlobalComponent
 				$created_patient = Patient::create([
 					'name' => $patient_name,
 					'age' => $request->pt_age ?? '0',
+					'age_type' => $request->pt_age_type ?: '1',
 					'gender' => (($request->pt_gender == 'ប្រុស' || strtolower(trim($request->pt_gender)) == 'male') ? '1' : '2'),
 					'phone' => $request->pt_phone ?? '',
-					'address_village' => $request->pt_village ?? '',
-					'address_commune' => $request->pt_commune ?? '',
-					'address_district_id' => $request->pt_district_id ?? '',
-					'address_province_id' => $request->pt_province_id ?? '',
+					'address_code' => $request->pt_village_id,
 					'created_by' => Auth::user()->id,
 					'updated_by' => Auth::user()->id,
 				]);
@@ -90,6 +88,22 @@ class GlobalComponent
 		}
 		
 		return $patient_id;		
+	}
+
+	public static function MergeRequestPatient($request, $array)
+	{
+		return array_merge([
+			'patient_id' => $request->patient_id ?: self::GetPatientIdOrCreate($request),
+			'pt_no' => str_pad($request->patient_id, 6, "0", STR_PAD_LEFT),
+			'pt_name' => $request->pt_name,
+			'pt_gender' => $request->pt_gender,
+			'pt_age' => $request->pt_age,
+			'pt_phone' => $request->pt_phone,
+			'pt_province_id' => $request->pt_province_id,
+			'pt_district_id' => $request->pt_district_id,
+			'pt_commune' => $request->pt_commune,
+			'pt_village' => $request->pt_village,
+		], $array);
 	}
 }
 

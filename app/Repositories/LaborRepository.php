@@ -11,6 +11,7 @@ use App\Models\Patient;
 use App\Models\Service;
 use App\Repositories\PatientRepository;
 use Yajra\DataTables\Facades\DataTables;
+use App\Repositories\Component\GlobalComponent;
 use Hash;
 use Auth;
 use DB;
@@ -505,102 +506,52 @@ class LaborRepository
 	public function create($request)
 	{
 
-		$patient_id = $request->patient_id;
-
-
-		if (isset($request->patient_id) && $request->patient_id!='') {
-			# code...
-		}else{
-			$patient = Patient::where('name', $request->pt_name)->first();
-
-			if ($patient!=null) {
-				$patient_id = $patient->id;
-			}else{
-				$created_patient = Patient::create([
-					'name' => $request->pt_name,
-					'age' => $request->pt_age,
-					'gender' => (($request->pt_gender=='ប្រុស' || $request->pt_gender == 'male' || $request->pt_gender == 'Male')? '1' : '2'),
-					'phone' => $request->pt_phone,
-					'address_village' => $request->pt_village,
-					'address_commune' => $request->pt_commune,
-					'address_district_id' => $request->pt_district_id,
-					'address_province_id' => $request->pt_province_id,
-					'created_by' => Auth::user()->id,
-					'updated_by' => Auth::user()->id,
-				]);
-				$patient_id = $created_patient->id;
-			}
-		}
-
-
-		$labor = Labor::create([
+		$request->patient_id = GlobalComponent::GetPatientIdOrCreate($request);
+		$labor = Labor::create(GlobalComponent::MergeRequestPatient($request, [
 			'date' => $request->date,
 			'labor_number' => $request->labor_number,
-			'pt_no' => str_pad($patient_id, 6, "0", STR_PAD_LEFT),
-			'pt_age' => $request->pt_age,
-			'pt_name' => $request->pt_name,
-			'pt_gender' => $request->pt_gender,
-			'pt_phone' => $request->pt_phone,
-			'pt_village' => $request->pt_village,
-			'pt_commune' => $request->pt_commune,
-			'pt_district_id' => $request->pt_district_id,
-			'pt_province_id' => $request->pt_province_id,
 			'price' => $request->price ?: 0,
 			'labor_type' => $request->labor_type ?: 1,
 			'simple_labor_detail' => $request->simple_labor_detail ?: '',
 			'remark' => $request->remark,
-			'patient_id' => $patient_id,
 			'created_by' => Auth::user()->id,
 			'updated_by' => Auth::user()->id,
-		]);
-		
+		]));
 		if (isset($request->service_name) && isset($request->service_id)) {
 			for ($i = 0; $i < count($request->service_name); $i++) {
 				LaborDetail::create([
-						'name' => $request->service_name[$i],
-						'result' => $request->result[$i],
-						'unit' => $request->unit[$i],
-						'service_id' => $request->service_id[$i],
-						'labor_id' => $labor->id,
-						'created_by' => Auth::user()->id,
-						'updated_by' => Auth::user()->id,
-					]);
+					'name' => $request->service_name[$i],
+					'result' => $request->result[$i],
+					'unit' => $request->unit[$i],
+					'service_id' => $request->service_id[$i],
+					'labor_id' => $labor->id,
+					'created_by' => Auth::user()->id,
+					'updated_by' => Auth::user()->id,
+				]);
 			}
 		}
-
 		return $labor;
 	}
 
 	public function update($request, $labor)
 	{
-		// dd($request->all());
-		$labor->update([
+		$labor->update(GlobalComponent::MergeRequestPatient($request, [
 			'date' => $request->date,
-			'pt_age' => $request->pt_age,
-			'pt_name' => $request->pt_name,
-			'pt_gender' => $request->pt_gender,
-			'pt_phone' => $request->pt_phone,
-			'pt_village' => $request->pt_village,
-			'pt_commune' => $request->pt_commune,
-			'pt_district_id' => $request->pt_district_id,
-			'pt_province_id' => $request->pt_province_id,
 			'price' => $request->price ?: 0,
 			'simple_labor_detail' => $request->simple_labor_detail ?: '',
 			'remark' => $request->remark,
 			'updated_by' => Auth::user()->id,
-		]);
+		]));
 		if (isset($request->labor_detail_ids)) {
 			for ($i = 0; $i < count($request->labor_detail_ids); $i++) {
 				LaborDetail::find($request->labor_detail_ids[$i])->update([
-																														'result' => $request->result[$i],
-																														'unit' => $request->unit[$i],
-																														'updated_by' => Auth::user()->id,
-																													]);
+					'result' => $request->result[$i],
+					'unit' => $request->unit[$i],
+					'updated_by' => Auth::user()->id,
+				]);
 			}
 		}
-		
 		return $labor;
-
 	}
 
 	public function destroy($request, $labor)

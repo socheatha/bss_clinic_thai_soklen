@@ -7,6 +7,7 @@ use App\Models\Echoes;
 use App\Models\Patient;
 use App\Models\EchoDefaultDescription;
 use Yajra\DataTables\Facades\DataTables;
+use App\Repositories\Component\GlobalComponent;
 use Hash;
 use Auth;
 use Image;
@@ -164,52 +165,16 @@ class EchoesRepository
 
 	public function create($request, $path, $type)
 	{
-		
-		$patient_id = $request->patient_id;
-
-		if (isset($request->patient_id) && $request->patient_id!='') {
-			# code...
-		}else{
-			$patient = Patient::where('name', $request->pt_name)->first();
-
-			if ($patient!=null) {
-				$patient_id = $patient->id;
-			}else{
-				$created_patient = Patient::create([
-					'name' => $request->pt_name,
-					'age' => $request->pt_age,
-					'gender' => (($request->pt_gender=='ប្រុស' || $request->pt_gender == 'male' || $request->pt_gender == 'Male')? '1' : '2'),
-					'phone' => $request->pt_phone,
-					'address_village' => $request->pt_village,
-					'address_commune' => $request->pt_commune,
-					'address_district_id' => $request->pt_district_id,
-					'address_province_id' => $request->pt_province_id,
-					'created_by' => Auth::user()->id,
-					'updated_by' => Auth::user()->id,
-				]);
-				$patient_id = $created_patient->id;
-			}
-		}
-
-
 		$echo_default_description = EchoDefaultDescription::where('slug', $type)->first();
-		$echoes = Echoes::create([
-			'date' => $request->date,
-			'pt_age' => $request->pt_age,
-			'pt_name' => $request->pt_name,
-			'pt_gender' => $request->pt_gender,
-			'pt_phone' => $request->pt_phone,
-			'pt_village' => $request->pt_village,
-			'pt_commune' => $request->pt_commune,
-			'pt_district_id' => $request->pt_district_id,
-			'pt_province_id' => $request->pt_province_id,
+		$request->patient_id = GlobalComponent::GetPatientIdOrCreate($request);
+		$echoes = Echoes::create(GlobalComponent::MergeRequestPatient($request, [
+			'date' => $request->date,			
 			'pt_diagnosis' => $request->pt_diagnosis,
 			'description' => $request->description,
-			'patient_id' => $patient_id,
 			'echo_default_description_id' => $echo_default_description->id,
 			'created_by' => Auth::user()->id,
 			'updated_by' => Auth::user()->id,
-		]);
+		]));
 		
 		if ($request->file('image')) {
 			$image = $request->file('image');
@@ -223,21 +188,12 @@ class EchoesRepository
 
 	public function update($request, $echoes, $path)
 	{
-		$echoes->update([
-			'date' => $request->date,
-			'pt_age' => $request->pt_age,
-			'pt_name' => $request->pt_name,
-			'pt_gender' => $request->pt_gender,
-			'pt_phone' => $request->pt_phone,
-			'pt_village' => $request->pt_village,
-			'pt_commune' => $request->pt_commune,
-			'pt_district_id' => $request->pt_district_id,
-			'pt_province_id' => $request->pt_province_id,
+		$echoes->update(GlobalComponent::MergeRequestPatient($request, [
+			'date' => $request->date,			
 			'pt_diagnosis' => $request->pt_diagnosis,
 			'description' => $request->description,
-			'patient_id' => $request->patient_id,
 			'updated_by' => Auth::user()->id,
-		]);
+		]));
 		
 		if ($request->file('image')) {
 			$image = $request->file('image');

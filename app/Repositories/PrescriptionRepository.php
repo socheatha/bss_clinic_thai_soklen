@@ -8,6 +8,7 @@ use App\Models\Prescription;
 use App\Models\PrescriptionDetail;
 use App\Models\Medicine;
 use Yajra\DataTables\Facades\DataTables;
+use App\Repositories\Component\GlobalComponent;
 use Hash;
 use Auth;
 
@@ -181,51 +182,15 @@ class PrescriptionRepository
 
 	public function create($request)
 	{
-
-		$patient_id = $request->patient_id;
-
-		if (isset($request->patient_id) && $request->patient_id!='') {
-			# code...
-		}else{
-			$patient = Patient::where('name', $request->pt_name)->first();
-
-			if ($patient!=null) {
-				$patient_id = $patient->id;
-			}else{
-				$created_patient = Patient::create([
-					'name' => $request->pt_name,
-					'age' => $request->pt_age,
-					'gender' => (($request->pt_gender=='ប្រុស' || $request->pt_gender == 'male' || $request->pt_gender == 'Male')? '1' : '2'),
-					'phone' => $request->pt_phone,
-					'address_village' => $request->pt_village,
-					'address_commune' => $request->pt_commune,
-					'address_district_id' => $request->pt_district_id,
-					'address_province_id' => $request->pt_province_id,
-					'created_by' => Auth::user()->id,
-					'updated_by' => Auth::user()->id,
-				]);
-				$patient_id = $created_patient->id;
-			}
-		}
-
-		$prescription = Prescription::create([
+		$request->patient_id = GlobalComponent::GetPatientIdOrCreate($request);
+		$prescription = Prescription::create(GlobalComponent::MergeRequestPatient($request, [
 			'date' => $request->date,
 			'code' => $request->code,
-			'pt_no' => str_pad($patient_id, 6, "0", STR_PAD_LEFT),
-			'pt_age' => $request->pt_age,
-			'pt_name' => $request->pt_name,
-			'pt_gender' => $request->pt_gender,
-			'pt_phone' => $request->pt_phone,
-			'pt_village' => $request->pt_village,
-			'pt_commune' => $request->pt_commune,
-			'pt_district_id' => $request->pt_district_id,
-			'pt_province_id' => $request->pt_province_id,
 			'pt_diagnosis' => $request->pt_diagnosis,
 			'remark' => $request->remark,
-			'patient_id' => $patient_id,
 			'created_by' => Auth::user()->id,
 			'updated_by' => Auth::user()->id,
-		]);
+		]));
 
 		if (isset($request->medicine_name) && isset($request->medicine_usage)) {
 			for ($i = 0; $i < count($request->medicine_name); $i++) {
@@ -330,26 +295,14 @@ class PrescriptionRepository
 
 	public function update($request, $prescription)
 	{
-		$prescription->update([
+		$prescription->update(GlobalComponent::MergeRequestPatient($request, [
 			'date' => $request->date,
 			'code' => $request->code,
-			'pt_no' => str_pad($request->patient_id, 6, "0", STR_PAD_LEFT),
-			'pt_age' => $request->pt_age,
-			'pt_name' => $request->pt_name,
-			'pt_gender' => $request->pt_gender,
-			'pt_phone' => $request->pt_phone,
-			'pt_village' => $request->pt_village,
-			'pt_commune' => $request->pt_commune,
-			'pt_district_id' => $request->pt_district_id,
-			'pt_province_id' => $request->pt_province_id,
 			'pt_diagnosis' => $request->pt_diagnosis,
 			'remark' => $request->remark,
-			'patient_id' => $request->patient_id,
 			'updated_by' => Auth::user()->id,
-		]);
-		
+		]));
 		return $prescription;
-
 	}
 
 	public function status($prescription, $status)
