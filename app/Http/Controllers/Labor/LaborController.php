@@ -143,6 +143,7 @@ class LaborController extends Controller
 
 		$this->data = [
 			'labor' => $labor,
+			'labor_details' => $this->labor->getLaborDetail($labor->id),
 			'provinces' => Province::getSelectData(),
 			'categories' => LaborCategory::getSelectData('id', 'name', '', 'id' ,'asc'),
 			'districts' => $labor->pt_province_id && $labor->pt_district_id ? $labor->province->getSelectDistrict() : [],

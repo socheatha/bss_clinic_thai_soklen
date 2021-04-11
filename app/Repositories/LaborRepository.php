@@ -88,8 +88,18 @@ class LaborRepository
 	public function getLaborServiceCheckList($request)
 	{
 		$service_check_list = '';
-		$labor_category = LaborCategory::find($request->id);
-		if ($labor_category != null) {
+		$ids = [];
+		if ($request->type == 1) {
+			$ids = [1];
+		} else if ($request->type == 2){
+			$ids = [2,3];
+		}
+		$labor_categories = LaborCategory::whereIn('id', $ids)->orderBy('id','asc')->get();
+
+		foreach ($labor_categories as $key => $labor_category) {
+			$service_check_list .= '<div class="col-sm-12">
+																<h4 class="py-2">'. $labor_category->name .'</h4>
+															</div>';
 			foreach ($labor_category->services as $key => $service) {
 				$service_check_list .= '<div class="col-sm-4">
 																	<div class="form-check mb-3">
@@ -98,6 +108,7 @@ class LaborRepository
 																	</div>
 																</div>';
 			}
+
 		}
 		return response()->json([
 			'service_check_list' => $service_check_list,
@@ -107,8 +118,10 @@ class LaborRepository
 	public function getCheckedServicesList($request)
 	{
 		$checked_services_list = '';
-		$labor_services = LaborService::whereIn('id', $request->ids)->get();
+		$labor_services = LaborService::whereIn('id', $request->ids)->orderBy('category_id', 'asc')->get();
 		$no = $request->no;
+		$category_id = '';
+		$category_list = '';
 
 		foreach ($labor_services as $key => $service) {
 			
@@ -124,12 +137,21 @@ class LaborRepository
 			}
 
 			$no++;
+			if ($category_id != $service->category_id) {
+				$category_id = $service->category_id;
+				$checked_services_list .= '<tr>
+																		<td colspan="6"><h6 class="text-center">'. $service->category->name .'</h6></td>
+																	</tr>';
+			}
+			$category_id = $service->category_id;
+			
 			if ($service->name=='TH' || $service->name=='TO') {
 				$checked_services_list .= '<tr class="labor_item" id="'. $no.'-'.$service->id .'">
 																		<td class="text-center">'. $no .'</td>
 																		<td>
 																			<input type="hidden" name="service_id[]" value="'. $service->id .'">
 																			<input type="hidden" name="service_name[]" value="'. $service->name .'">
+																			<input type="hidden" name="category_id[]" value="'. $service->category_id .'">
 																			'. $service->name .'
 																		</td>
 																		<td class="text-center">
@@ -150,12 +172,13 @@ class LaborRepository
 																			<button type="button" onclick="removeCheckedService(\''. $no.'-'.$service->id .'\')" class="btn btn-sm btn-flat btn-danger"><i class="fa fa-trash-alt"></i></button>
 																		</td>
 																	</tr>';
-			} else if ($service->name=='Test Hélicobactaire Pylorie' || $service->name=='Test Malaria' || $service->name=='Test Syphilis') {
+			} else if ($service->unit=='Réaction') {
 				$checked_services_list .= '<tr class="labor_item" id="'. $no.'-'.$service->id .'">
 																		<td class="text-center">'. $no .'</td>
 																		<td>
 																			<input type="hidden" name="service_id[]" value="'. $service->id .'">
 																			<input type="hidden" name="service_name[]" value="'. $service->name .'">
+																			<input type="hidden" name="category_id[]" value="'. $service->category_id .'">
 																			'. $service->name .'
 																		</td>
 																		<td class="text-center">
@@ -182,6 +205,7 @@ class LaborRepository
 																		<td>
 																			<input type="hidden" name="service_id[]" value="'. $service->id .'">
 																			<input type="hidden" name="service_name[]" value="'. $service->name .'">
+																			<input type="hidden" name="category_id[]" value="'. $service->category_id .'">
 																			'. $service->name .'
 																		</td>
 																		<td class="text-center">
@@ -200,6 +224,7 @@ class LaborRepository
 																		</td>
 																	</tr>';
 			}
+			
 
 		}
 		return response()->json([
@@ -212,6 +237,7 @@ class LaborRepository
 		
 		$labor_detail_list = '';
 		$labor = Labor::find($id);
+		$category_id = '';
 		foreach ($labor->labor_details as $order => $labor_detail) {
 			
 			$reference = '';
@@ -225,11 +251,19 @@ class LaborRepository
 				$reference = '';
 			}
 
+			if ($category_id != $labor_detail->service->category_id) {
+				$labor_detail_list .= '<tr>
+																		<td colspan="6"><h6 class="text-center">'. $labor_detail->service->category->name .'</h6></td>
+																	</tr>';
+			}
+			$category_id = $labor_detail->service->category_id;
+
 			if ($labor_detail->name=='TH' || $labor_detail->name=='TO'){
 				$labor_detail_list .= '<tr class="labor_item" id="'. $labor_detail->result .'">
 																<td class="text-center">'. ++$order .'</td>
 																<td>
 																	<input type="hidden" name="labor_detail_ids[]" value="'. $labor_detail->id .'">
+																	<input type="hidden" name="category_id[]" value="'. $labor_detail->category_id .'">
 																	'. $labor_detail->name .'
 																</td>
 																<td class="text-center">
@@ -249,11 +283,12 @@ class LaborRepository
 																	<button type="button" onclick="deleteLaborDetail(\''. $labor_detail->id .'\')" class="btn btn-sm btn-flat btn-danger"><i class="fa fa-trash-alt"></i></button>
 																</td>
 															</tr>';
-			}elseif ($labor_detail->name=='Test Hélicobactaire Pylorie' || $labor_detail->name=='Test Malaria' || $labor_detail->name=='Test Syphilis'){
+			}elseif ($labor_detail->service->unit=='Réaction'){
 				$labor_detail_list .= '<tr class="labor_item" id="'. $labor_detail->result .'">
 																<td class="text-center">'. ++$order .'</td>
 																<td>
 																	<input type="hidden" name="labor_detail_ids[]" value="'. $labor_detail->id .'">
+																	<input type="hidden" name="category_id[]" value="'. $labor_detail->category_id .'">
 																	'. $labor_detail->name .'
 																</td>
 																<td class="text-center">
@@ -278,6 +313,7 @@ class LaborRepository
 																	<td class="text-center">'. ++$order .'</td>
 																	<td>
 																		<input type="hidden" name="labor_detail_ids[]" value="'. $labor_detail->id .'">
+																		<input type="hidden" name="category_id[]" value="'. $labor_detail->category_id .'">
 																		'. $labor_detail->name .'
 																	</td>
 																	<td class="text-center">
@@ -309,6 +345,7 @@ class LaborRepository
 				'name' => $service->name,
 				'unit' => '',
 				'service_id' => $service->id,
+				'category_id' => $service->category_id,
 				'labor_id' => $labor->id,
 				'created_by' => Auth::user()->id,
 				'updated_by' => Auth::user()->id,
@@ -335,9 +372,7 @@ class LaborRepository
 	{
 
 		$no = 1;
-		$total = 0;
-		$total_discount = 0;
-		$grand_total = 0;
+		$category_id = 0;
 		$labor_detail = '';
 		$labor_detail_item_list = '';
 		$labor_detail_item_list_th_to = '';
@@ -366,20 +401,37 @@ class LaborRepository
 																						<td width=""></td>
 																					</tr>';
 
-			}else if ($labor_detail->service->name=='Test Hélicobactaire Pylorie' || $labor_detail->service->name=='Test Malaria' || $labor_detail->service->name=='Test Syphilis') {
+			}else if ($labor_detail->service->unit=='Réaction') {
 				
 				$class = '';
 				if ($labor_detail->result== 'positif' || $labor_detail->result== 'Positif' || $labor_detail->result== 'POSITIF') {
 					$class = 'color_red';
 				}
+				if ($labor->labor_type == '2') {
 
-				$labor_detail_item_list .= '<tr>
-																			<td width="2%"></td>
-																			<td width="30%">-'. $labor_detail->name .'</td>
-																			<td width="16%">: <b>'. $labor_detail->service->unit .'</b></td>
-																			<td width="12%">&nbsp;<span class="'. $class .'">'. $labor_detail->result .'</span></td>
-																			<td width="">'. (($labor_detail->service->ref_from != '' && $labor_detail->service->ref_from!='')? '('. $labor_detail->service->ref_from .'-'. $labor_detail->service->ref_to .' '. $labor_detail->service->unit .')' : '') .'</td>
-																		</tr>';
+					if ($category_id != $labor_detail->service->category_id) {
+						$labor_detail_item_list .= '<tr>
+																					<td colspan="4"><h6 style="padding: 30px 0 8px 0;">'. $labor_detail->service->category->name .'</h6></td>
+																				</tr>';
+					}
+					$category_id = $labor_detail->service->category_id;
+
+					$labor_detail_item_list .= '<tr>
+																				<td width="5%"></td>
+																				<td width="30%">'. $labor_detail->name .'</td>
+																				<td width="25%">: <b>'. $labor_detail->service->unit .'</b></td>
+																				<td>&nbsp;<span class="'. $class .'">'. $labor_detail->result .'</span></td>
+																			</tr>';
+				} else {
+					$labor_detail_item_list .= '<tr>
+																				<td width="2%"></td>
+																				<td width="30%">-'. $labor_detail->name .'</td>
+																				<td width="16%">: <b>'. $labor_detail->service->unit .'</b></td>
+																				<td width="12%">&nbsp;<span class="'. $class .'">'. $labor_detail->result .'</span></td>
+																				<td width="">'. (($labor_detail->service->ref_from != '' && $labor_detail->service->ref_from!='')? '('. $labor_detail->service->ref_from .'-'. $labor_detail->service->ref_to .' '. $labor_detail->service->unit .')' : '') .'</td>
+																			</tr>';
+				}
+				
 			}else{
 				
 				$class = '';
@@ -395,16 +447,33 @@ class LaborRepository
 				}else if($labor_detail->service->ref_from != '' && $labor_detail->service->ref_to ==''){
 					$reference = '('. $labor_detail->service->ref_from .'> '. $labor_detail->service->unit .')';
 				}else if($labor_detail->service->ref_from != '' && $labor_detail->service->ref_to!=''){
-					$reference = '('. $labor_detail->service->ref_from .'-'. $labor_detail->service->ref_to .' '. $labor_detail->service->unit .')';
+					$reference = '('. $labor_detail->service->description . $labor_detail->service->ref_from .'-'. $labor_detail->service->ref_to .' '. $labor_detail->service->unit .')';
 				}
 
-				$labor_detail_item_list .= '<tr>
-																			<td width="2%"></td>
-																			<td width="30%">-'. $labor_detail->name .'</td>
-																			<td width="16%">: <b><span class="'. $class .'">'. $labor_detail->result .'</span></b></td>
-																			<td width="12%">&nbsp;'. $labor_detail->service->unit .'</td>
-																			<td width="">'. $reference .'</td>
-																		</tr>';
+				if ($labor->labor_type == '2') {
+
+					if ($category_id != $labor_detail->service->category_id) {
+						$labor_detail_item_list .= '<tr>
+																					<td colspan="4"><h6 style="padding: 30px 0 8px 0;">'. $labor_detail->service->category->name .'</h6></td>
+																				</tr>';
+					}
+					$category_id = $labor_detail->service->category_id;
+
+					$labor_detail_item_list .= '<tr>
+																				<td width="5%"></td>
+																				<td width="30%">'. $labor_detail->name .'</td>
+																				<td width="25%">: <b><span class="'. $class .'">'. $labor_detail->result .'</span></b> '. $labor_detail->service->unit .'</td>
+																				<td>'. $reference .'</td>
+																			</tr>';
+				} else {
+					$labor_detail_item_list .= '<tr>
+																				<td width="2%"></td>
+																				<td width="30%">-'. $labor_detail->name .'</td>
+																				<td width="16%">: <b><span class="'. $class .'">'. $labor_detail->result .'</span></b></td>
+																				<td width="12%">&nbsp;'. $labor_detail->service->unit .'</td>
+																				<td width="">'. $reference .'</td>
+																			</tr>';
+				}
 			}
 		}
 		if(empty($labor->province)){ $labor->province = new \stdClass(); $labor->province->name = ''; }
@@ -470,7 +539,7 @@ class LaborRepository
 													</td>
 												</tr>
 											</table>
-											' . ($labor->labor_type == 2 ? ('<div id="ck_result">' . str_replace('__checkbox__', '<input type="checkbox" disabled/>', $labor->simple_labor_detail) . '</div>') : '<div style="height: 14.3cm"></div>') . '
+											' . ($labor->labor_type == 2 ? ('<table width="100%">'. $labor_detail_item_list .'</table>') : '<div style="height: 14.3cm"></div>') . '
 											
 											' . ($labor->labor_type == 1 ? ('<small class="remark">'. $labor->remark .'</small>') : '') . '
 											<br/>
@@ -524,6 +593,7 @@ class LaborRepository
 					'result' => $request->result[$i],
 					'unit' => $request->unit[$i],
 					'service_id' => $request->service_id[$i],
+					'category_id' => $request->category_id[$i],
 					'labor_id' => $labor->id,
 					'created_by' => Auth::user()->id,
 					'updated_by' => Auth::user()->id,

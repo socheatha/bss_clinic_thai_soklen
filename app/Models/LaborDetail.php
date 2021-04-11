@@ -8,7 +8,7 @@ use App\Models\Labor;
 class LaborDetail extends Model
 {
 	protected $fillable = [
-		'name', 'result', 'unit', 'description', 'labor_id', 'service_id', 'created_by', 'updated_by',
+		'name', 'result', 'unit', 'description', 'labor_id', 'category_id', 'service_id', 'created_by', 'updated_by',
 	];
 
 	protected $table = 'labor_details';

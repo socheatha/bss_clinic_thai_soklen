@@ -52,7 +52,7 @@
 						<i class="fas fa-list"></i>&nbsp;
 						{{ __('alert.modal.title.labor_detail') }}
 					</h3>
-					@if($labor_type == 1)
+					@if($labor_type == 1 || $labor_type == 2)
 					<div class="card-tools">
 						<button type="button" class="btn btn-flat btn-sm btn-success btn-prevent-submit" id="btn_add_service"><i class="fa fa-plus"></i> {!! __('label.buttons.add_item') !!}</button>
 					</div>
@@ -60,7 +60,7 @@
 				</div>
 				<!-- /.card-header -->
 				<div class="card-body">
-					@if($labor_type == 1)
+					@if($labor_type == 1 || $labor_type == 2)
 						<table class="table table-bordered" width="100%">
 							<thead>
 								<tr>
@@ -73,100 +73,9 @@
 								</tr>
 							</thead>
 							<tbody class="item_list">
-								@foreach ($labor->labor_details as $order => $labor_detail)
-								
-									<?php
-										$reference = '';
-										if ($labor_detail->service->ref_from == '' && $labor_detail->service->ref_to != '') {
-											$reference = '(<'. $labor_detail->service->ref_to .' '. $labor_detail->service->unit .')';
-										}else if($labor_detail->service->ref_from != '' && $labor_detail->service->ref_to ==''){
-											$reference = '('. $labor_detail->service->ref_from .'> '. $labor_detail->service->unit .')';
-										}else if($labor_detail->service->ref_from != '' && $labor_detail->service->ref_to!=''){
-											$reference = '('. $labor_detail->service->ref_from .'-'. $labor_detail->service->ref_to .' '. $labor_detail->service->unit .')';
-										}else{
-											$reference = '';
-										}
-									?>
-
-									@if ($labor_detail->name=='TH' || $labor_detail->name=='TO')
-										<tr class="labor_item" id="{{ $labor_detail->result }}">
-											<td class="text-center">{{ ++$order }}</td>
-											<td>
-												<input type="hidden" name="labor_detail_ids[]" value="{{ $labor_detail->id }}">
-												{{ $labor_detail->name }}
-											</td>
-											<td class="text-center">
-												<input type="text" name="result[]" value="{{ $labor_detail->result }}" class="form-control"/>
-											</td>
-											<td class="text-center">
-												<select name="unit[]" class="form-control">
-													<option value="" {{ (($labor_detail->result == '')? 'selected' : '') }}>None</option>
-													<option value="Négatif" {{ (($labor_detail->unit == 'Négatif')? 'selected' : '') }}>Négatif</option>
-													<option value="Positif" {{ (($labor_detail->unit == 'Positif')? 'selected' : '') }}>Positif</option>
-												</select>
-											</td>
-											<td class="text-center">
-												{!! $reference !!}
-											</td>
-											<td class="text-center">
-												<button type="button" onclick="deleteLaborDetail('{{ $labor_detail->id }}')" class="btn btn-sm btn-flat btn-danger"><i class="fa fa-trash-alt"></i></button>
-											</td>
-										</tr>
-									@elseif ($labor_detail->name=='Test Hélicobactaire Pylorie' || $labor_detail->name=='Test Malaria' || $labor_detail->name=='Test Syphilis')
-										<tr class="labor_item" id="{{ $labor_detail->result }}">
-											<td class="text-center">{{ ++$order }}</td>
-											<td>
-												<input type="hidden" name="labor_detail_ids[]" value="{{ $labor_detail->id }}">
-												{{ $labor_detail->name }}
-											</td>
-											<td class="text-center">
-												<input type="hidden" name="unit[]" value="">
-												{!! $labor_detail->service->unit !!}
-											</td>
-											<td class="text-center">
-												<select name="result[]" class="form-control">
-													<option value="" {{ (($labor_detail->result == '')? 'selected' : '') }}>None</option>
-													<option value="Négatif" {{ (($labor_detail->result == 'Négatif')? 'selected' : '') }}>Négatif</option>
-													<option value="Positif" {{ (($labor_detail->result == 'Positif')? 'selected' : '') }}>Positif</option>
-												</select>
-											</td>
-											<td class="text-center">
-												{!! $reference !!}
-											</td>
-											<td class="text-center">
-												<button type="button" onclick="deleteLaborDetail('{{ $labor_detail->id }}')" class="btn btn-sm btn-flat btn-danger"><i class="fa fa-trash-alt"></i></button>
-											</td>
-										</tr>
-									@else
-										<tr class="labor_item" id="{{ $labor_detail->result }}">
-											<td class="text-center">{{ ++$order }}</td>
-											<td>
-												<input type="hidden" name="labor_detail_ids[]" value="{{ $labor_detail->id }}">
-												{{ $labor_detail->name }}
-											</td>
-											<td class="text-center">
-												<input type="text" name="result[]" value="{{ $labor_detail->result }}" class="form-control"/>
-											</td>
-											<td class="text-center">
-												<input type="hidden" name="unit[]" value="">
-												{{ $labor_detail->service->unit }}
-											</td>
-											<td class="text-center">
-												{!! $reference !!}
-											</td>
-											<td class="text-center">
-												<button type="button" onclick="deleteLaborDetail('{{ $labor_detail->id }}')" class="btn btn-sm btn-flat btn-danger"><i class="fa fa-trash-alt"></i></button>
-											</td>
-										</tr>
-									@endif
-								@endforeach
+								{!! $labor_details !!}
 							</tbody>
 						</table>
-					@elseif($labor_type == 2)
-						<div class="form-group">
-							{!! Html::decode(Form::label('description', __('label.form.description') .'<small>*</small>')) !!}
-							{!! Form::textarea('simple_labor_detail', $labor->simple_labor_detail ?: '', ['class' => 'form-control ','style' => 'height: 121px;', 'placeholder' => 'description', 'id' => 'my-editor', 'required']) !!}							
-						</div>
 					@endif
 				</div>
 				<!-- /.card-body -->
@@ -205,67 +114,50 @@
 @section('js')
 <script src="{{ asset('ckeditor/ckeditor.js') }}"></script>
 <script type="text/javascript">
-	var editor = CKEDITOR.replace('my-editor', {
-		height: '350',
-		font_names: 'Calibrib Bold; Calibri Italic; Calibri; Roboto Regular; Roboto Bold; Khmer OS Battambang; Khmer OS Muol Light; Khmer OS Content; Khmer OS Kuolen;',
-		toolbar: [
-			{ name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ], items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'CopyFormatting', 'RemoveFormat' ] },
-			{ name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ], items: [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock' ] },
-			{ name: 'document', groups: [ 'mode', 'document', 'doctools' ], items: [ 'Source', '-', 'Save', 'NewPage', 'ExportPdf', 'Preview', 'Print', '-', 'Templates' ] },
-			{ name: 'insert', items: ['Table' ] },
-			{ name: 'styles', items: [ 'Styles', 'Format', 'Font', 'FontSize' ] },
-			{ name: 'colors', items: [ 'TextColor', 'BGColor' ] },
-			{ name: 'clipboard', groups: [ 'clipboard', 'undo' ]},
-		]
-	});
 
 	$('#btn_add_service').click(function () {
 		$('#create_labor_item_modal').modal();
-		$('#category_id').val('1').trigger('change');
+		getLaborServiceCheckList();
 	});
 
-	$('#category_id').change(function () {
-		if ($(this).val() != '') {
-			$('#check_all_service').iCheck('uncheck');
-			$.ajax({
-				url: "{{ route('labor.getLaborServiceCheckList') }}",
-				method: 'post',
-				data: {
-					id: $(this).val(),
-				},
-				success: function (data) {
-					$('.service_check_list').html(data.service_check_list);
-					
-					$('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
-						checkboxClass: 'icheckbox_minimal-blue',
-						radioClass   : 'iradio_minimal-blue'
-					})
-					$('#check_all_service').on('ifChecked', function (event) {
-						$('.chb_service').iCheck('check');
-						triggeredByChild = false;
-					});
-					$('#check_all_service').on('ifUnchecked', function (event) {
-						if (!triggeredByChild) {
-							$('.chb_service').iCheck('uncheck');
-						}
-						triggeredByChild = false;
-					});
-					// Removed the checked state from "All" if any checkbox is unchecked
-					$('.chb_service').on('ifUnchecked', function (event) {
-						triggeredByChild = true;
-						$('#check_all_service').iCheck('uncheck');
-					});
-					$('.chb_service').on('ifChecked', function (event) {
-						if ($('.chb_service').filter(':checked').length == $('.chb_service').length) {
-							$('#check_all_service').iCheck('check');
-						}
-					});
-				}
-			});
-		}else{
-			$('.service_check_list').html('');
-		}
-	});
+	function getLaborServiceCheckList() {
+		$('#check_all_service').iCheck('uncheck');
+		$.ajax({
+			url: "{{ route('labor.getLaborServiceCheckList') }}",
+			method: 'post',
+			data: {
+				type: '{{ $labor_type }}',
+			},
+			success: function (data) {
+				$('.service_check_list').html(data.service_check_list);
+				
+				$('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
+					checkboxClass: 'icheckbox_minimal-blue',
+					radioClass   : 'iradio_minimal-blue'
+				})
+				$('#check_all_service').on('ifChecked', function (event) {
+					$('.chb_service').iCheck('check');
+					triggeredByChild = false;
+				});
+				$('#check_all_service').on('ifUnchecked', function (event) {
+					if (!triggeredByChild) {
+						$('.chb_service').iCheck('uncheck');
+					}
+					triggeredByChild = false;
+				});
+				// Removed the checked state from "All" if any checkbox is unchecked
+				$('.chb_service').on('ifUnchecked', function (event) {
+					triggeredByChild = true;
+					$('#check_all_service').iCheck('uncheck');
+				});
+				$('.chb_service').on('ifChecked', function (event) {
+					if ($('.chb_service').filter(':checked').length == $('.chb_service').length) {
+						$('#check_all_service').iCheck('check');
+					}
+				});
+			}
+		});
+	}
 	
 	$('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
 		checkboxClass: 'icheckbox_minimal-blue',
