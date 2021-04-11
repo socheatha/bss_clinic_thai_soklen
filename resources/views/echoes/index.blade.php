@@ -2,7 +2,6 @@
 
 @section('css')
 <link href="{{ asset('/css/daterangepicker.css') }}" rel="stylesheet">
-{{ Html::style('/css/echoes-print-style.css') }}
 <style type="text/css">
 
 </style>

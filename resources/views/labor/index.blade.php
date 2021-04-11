@@ -2,7 +2,6 @@
 
 @section('css')
 <link href="{{ asset('/css/daterangepicker.css') }}" rel="stylesheet">
-{{ Html::style('/css/labor-print-style.css') }}
 <style type="text/css">
 	/* .btn-print-labor{
 		position: absolute;

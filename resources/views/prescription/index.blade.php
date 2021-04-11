@@ -2,7 +2,6 @@
 
 @section('css')
 <link href="{{ asset('/css/daterangepicker.css') }}" rel="stylesheet">
-{{ Html::style('/css/prescription-print-style.css') }}
 <style type="text/css">
 	div.prescription-detail-expanded{
 		position: relative;
