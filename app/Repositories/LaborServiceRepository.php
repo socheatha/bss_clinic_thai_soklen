@@ -42,6 +42,7 @@ class LaborServiceRepository
 
 		$labor_service = LaborService::create([
 			'name' => $request->name,
+			'default_value' => $request->default_value,
 			'unit' => $request->unit,
 			'ref_from' => $request->ref_from,
 			'ref_to' => $request->ref_to,
@@ -60,6 +61,7 @@ class LaborServiceRepository
 
 		return $labor_service->update([
 			'name' => $request->name,
+			'default_value' => $request->default_value,
 			'unit' => $request->unit,
 			'ref_from' => $request->ref_from,
 			'ref_to' => $request->ref_to,

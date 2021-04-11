@@ -12,7 +12,7 @@ class LaborService extends BaseModel
 	protected $table = 'labor_services';
 
 	protected $fillable = [
-		'name', 'unit', 'ref_from', 'ref_to', 'description', 'category_id', 'created_by', 'updated_by',
+		'name', 'default_value', 'unit', 'ref_from', 'ref_to', 'description', 'category_id', 'created_by', 'updated_by',
 	];
 
 

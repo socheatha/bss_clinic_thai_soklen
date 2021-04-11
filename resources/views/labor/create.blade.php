@@ -162,6 +162,11 @@
 
 	$('#btn_add_item').click(function (event) {
 		event.preventDefault();
+		$(this).prop('disabled', true);
+
+		setTimeout(() => {
+			$(this).prop('disabled', false);
+		}, 2000);
 
 		var service_ids = [];
 		var n = $( ".labor_item" ).length;

@@ -234,6 +234,7 @@ return [
 		],
 
 		'labor_service' => [
+			'default_value' => 'តម្លៃលំនាំដើម',
 			'unit' => 'ឯកតា',
 			'category' => 'ប្រភេទ',
 			'ref_from' => 'លេខយោងចាប់ផ្ដើម',

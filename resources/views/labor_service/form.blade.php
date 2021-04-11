@@ -15,7 +15,15 @@
 		</div>
 	</div>
 
-	<div class="col-sm-6">
+	<div class="col-sm-3">
+		<div class="form-group">
+			{!! Html::decode(Form::label('default_value', __('label.form.labor_service.default_value') .' <small>*</small>')) !!}
+			{!! Form::text('default_value', ((isset($labor_service->default_value))? $labor_service->default_value : '' ), ['class' => 'form-control is_number '. (($errors->has("default_value"))? "is-invalid" : ""),'placeholder' => 'default value']) !!}
+			{!! $errors->first('default_value', '<div class="invalid-feedback">:message</div>') !!}
+		</div>
+	</div>
+
+	<div class="col-sm-3">
 		<div class="form-group">
 			{!! Html::decode(Form::label('unit', __('label.form.labor_service.unit') .' <small>*</small>')) !!}
 			{!! Form::text('unit', ((isset($labor_service->unit))? $labor_service->unit : '' ), ['class' => 'form-control '. (($errors->has("unit"))? "is-invalid" : ""),'placeholder' => 'unit']) !!}
