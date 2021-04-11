@@ -127,11 +127,11 @@ class LaborRepository
 			
 			$reference = '';
 			if ($service->ref_from == '' && $service->ref_to != '') {
-				$reference = '('. $labor_detail->service->description .' <'. $service->ref_to .' '. $service->unit .')';
+				$reference = '('. $service->description .' <'. $service->ref_to .' '. $service->unit .')';
 			}else if($service->ref_from != '' && $service->ref_to ==''){
 				$reference = '('. $labor_detail->service->description .' '. $service->ref_from .'> '. $service->unit .')';
 			}else if($service->ref_from != '' && $service->ref_to!=''){
-				$reference = '('. $labor_detail->service->description .' '. $service->ref_from .'-'. $service->ref_to .' '. $service->unit .')';
+				$reference = '('. $service->description .' '. $service->ref_from .'-'. $service->ref_to .' '. $service->unit .')';
 			}else{
 				$reference = '';
 			}

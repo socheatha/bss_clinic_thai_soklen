@@ -1,0 +1,7 @@
+sql update:
+- please drop relationship in table users and drop field setting_id in users
+- run this sql:
+DELETE FROM `setting` WHERE `setting`.`id` = 1;
+DELETE FROM `setting` WHERE `setting`.`id` = 2;
+UPDATE `setting` SET `id` = '1' WHERE `setting`.`id` = 3;
+ALTER TABLE `labor_details` ADD `category_id` INT(10) NULL AFTER `service_id`;
