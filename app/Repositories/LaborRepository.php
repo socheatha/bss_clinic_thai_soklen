@@ -127,11 +127,11 @@ class LaborRepository
 			
 			$reference = '';
 			if ($service->ref_from == '' && $service->ref_to != '') {
-				$reference = '(<'. $service->ref_to .' '. $service->unit .')';
+				$reference = '('. $labor_detail->service->description .' <'. $service->ref_to .' '. $service->unit .')';
 			}else if($service->ref_from != '' && $service->ref_to ==''){
-				$reference = '('. $service->ref_from .'> '. $service->unit .')';
+				$reference = '('. $labor_detail->service->description .' '. $service->ref_from .'> '. $service->unit .')';
 			}else if($service->ref_from != '' && $service->ref_to!=''){
-				$reference = '('. $service->ref_from .'-'. $service->ref_to .' '. $service->unit .')';
+				$reference = '('. $labor_detail->service->description .' '. $service->ref_from .'-'. $service->ref_to .' '. $service->unit .')';
 			}else{
 				$reference = '';
 			}
@@ -242,11 +242,11 @@ class LaborRepository
 			
 			$reference = '';
 			if ($labor_detail->service->ref_from == '' && $labor_detail->service->ref_to != '') {
-				$reference = '(<'. $labor_detail->service->ref_to .' '. $labor_detail->service->unit .')';
+				$reference = '('. $labor_detail->service->description .' <'. $labor_detail->service->ref_to .' '. $labor_detail->service->unit .')';
 			}else if($labor_detail->service->ref_from != '' && $labor_detail->service->ref_to ==''){
-				$reference = '('. $labor_detail->service->ref_from .'> '. $labor_detail->service->unit .')';
+				$reference = '('. $labor_detail->service->description .' '. $labor_detail->service->ref_from .'> '. $labor_detail->service->unit .')';
 			}else if($labor_detail->service->ref_from != '' && $labor_detail->service->ref_to!=''){
-				$reference = '('. $labor_detail->service->ref_from .'-'. $labor_detail->service->ref_to .' '. $labor_detail->service->unit .')';
+				$reference = '('. $labor_detail->service->description .' '. $labor_detail->service->ref_from .'-'. $labor_detail->service->ref_to .' '. $labor_detail->service->unit .')';
 			}else{
 				$reference = '';
 			}
@@ -441,11 +441,11 @@ class LaborRepository
 
 				$reference = '';
 				if ($labor_detail->service->ref_from == '' && $labor_detail->service->ref_to != '') {
-					$reference = '(<'. $labor_detail->service->ref_to .' '. $labor_detail->service->unit .')';
+					$reference = '('. $labor_detail->service->description .' <'. $labor_detail->service->ref_to .' '. $labor_detail->service->unit .')';
 				}else if($labor_detail->service->ref_from != '' && $labor_detail->service->ref_to ==''){
-					$reference = '('. $labor_detail->service->ref_from .'> '. $labor_detail->service->unit .')';
+					$reference = '('. $labor_detail->service->description .' '. $labor_detail->service->ref_from .'> '. $labor_detail->service->unit .')';
 				}else if($labor_detail->service->ref_from != '' && $labor_detail->service->ref_to!=''){
-					$reference = '('. $labor_detail->service->description . $labor_detail->service->ref_from .'-'. $labor_detail->service->ref_to .' '. $labor_detail->service->unit .')';
+					$reference = '('. $labor_detail->service->description .' '. $labor_detail->service->ref_from .'-'. $labor_detail->service->ref_to .' '. $labor_detail->service->unit .')';
 				}
 
 				if ($labor->labor_type == '2') {
