@@ -435,9 +435,7 @@ class LaborRepository
 			}else{
 				
 				$class = '';
-				if ($labor_detail->result < $labor_detail->service->ref_from) {
-					$class = 'color_red';
-				}else if ($labor_detail->result > $labor_detail->service->ref_to) {
+				if (($labor_detail->service->ref_from == '' && $labor_detail->result >= $labor_detail->service->ref_to) || $labor_detail->result < $labor_detail->service->ref_from || $labor_detail->result > $labor_detail->service->ref_to) {
 					$class = 'color_red';
 				}
 
